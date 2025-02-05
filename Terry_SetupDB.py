@@ -41,7 +41,7 @@ def generate_sku(base_id, platform, packaging, quality):
     return f"{base_id}{platform}-{packaging}{quality}"
 
 # Mappings
-platform_map = {"1": "Xbox", "2": "PlayStation", "3": "PC"}
+platform_map = {"1": "Xbox", "2": "PlayStation", "3": "PC", "4": "Other"}
 quality_map = {"G": "Good", "L": "Like New", "O": "Old"}
 
 # List Base Item IDs
@@ -82,7 +82,7 @@ def add_item():
         return
 
     name = input("Enter game name: ")
-    platform = input("Enter platform (1: Xbox, 2: PlayStation, 3: PC): ")
+    platform = input("Enter platform (1: Xbox, 2: PlayStation, 3: PC, 4: Other): ")
     packaging = input("Enter packaging (0: No, 1: Yes): ")
     quality = input("Enter quality (G: Good, L: Like New, O: Old): ").upper()
     stock = input("Enter stock quantity: ")
