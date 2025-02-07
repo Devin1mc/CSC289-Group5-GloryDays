@@ -1,11 +1,11 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 form {
-    background: white;
+    background: grey;
     padding: 20px;
     border-radius: 5px;
 }
@@ -18,8 +18,14 @@ input {
 
 button {
     padding: 10px;
-    background: blue;
-    color: white;
+    background: #e22f28;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
+    color: #ff9d22;
+}
+
+button:hover{
+    filter: brightness(1.2);
+    scale: 110%;
 }
