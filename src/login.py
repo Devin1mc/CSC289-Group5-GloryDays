@@ -44,7 +44,8 @@ def login():
     conn.close()
 
     if result and password_hash == result[0]:
-        return "Login successful!"
+        return render_template("inventory.html")
+
     else:
         return "Invalid Employee ID or Password."
 
@@ -68,6 +69,20 @@ def register():
         return redirect("/")
     except sqlite3.IntegrityError:
         return "Employee ID already exists."
+    
+# Route for inventory page
+@app.route("/inventory")
+def inventory_page():
+    if "user" in session:  # Check if user is logged in
+        return render_template("inventory-html.html")
+    else:
+        return redirect(url_for("login_page"))
+    
+# Route for logout
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login_page"))
 
 if __name__ == "__main__":
     setup_database()  # Run once to set up the database
