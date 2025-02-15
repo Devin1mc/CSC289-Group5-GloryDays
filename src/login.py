@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session, url_for
 import sqlite3
 import hashlib
 
-app = Flask(__name__)
+# Create a blueprint for authentication routes
+auth_bp = Blueprint('auth', __name__)
 
-# Function to create the database (only runs once)
 def setup_database():
     conn = sqlite3.connect("login_database.db")
     cursor = conn.cursor()
@@ -20,18 +20,15 @@ def setup_database():
     conn.commit()
     conn.close()
 
-# Route to serve the login page
-@app.route("/")
+@auth_bp.route("/")
 def login_page():
     return render_template("login.html")
 
-# Route to serve the register page
-@app.route("/register")
+@auth_bp.route("/register", methods=["GET"])
 def register_page():
     return render_template("register.html")
 
-# Route to handle login form submission
-@app.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     employee_id = request.form["employee_id"]
     password = request.form["password"]
@@ -44,13 +41,13 @@ def login():
     conn.close()
 
     if result and password_hash == result[0]:
-        return render_template("inventory.html")
-
+        # Save the user in session before redirecting
+        session["user"] = employee_id
+        return redirect(url_for("auth.inventory_page"))
     else:
         return "Invalid Employee ID or Password."
 
-# Route to handle user registration
-@app.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST"])
 def register():
     first_name = request.form["first_name"]
     last_name = request.form["last_name"]
@@ -62,28 +59,25 @@ def register():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO users (first_name, last_name, employee_id, password_hash) VALUES (?, ?, ?, ?)", 
-                       (first_name, last_name, employee_id, password_hash))
+        cursor.execute(
+            "INSERT INTO users (first_name, last_name, employee_id, password_hash) VALUES (?, ?, ?, ?)", 
+            (first_name, last_name, employee_id, password_hash)
+        )
         conn.commit()
         conn.close()
-        return redirect("/")
+        return redirect(url_for("auth.login_page"))
     except sqlite3.IntegrityError:
         return "Employee ID already exists."
-    
-# Route for inventory page
-@app.route("/inventory")
+
+@auth_bp.route("/inventory")
 def inventory_page():
-    if "user" in session:  # Check if user is logged in
-        return render_template("inventory-html.html")
+    if "user" in session:
+        # Ensure the inventory template name matches your actual file (changed to inventory.html)
+        return render_template("inventory.html")
     else:
-        return redirect(url_for("login_page"))
-    
-# Route for logout
-@app.route("/logout")
+        return redirect(url_for("auth.login_page"))
+
+@auth_bp.route("/logout")
 def logout():
     session.pop("user", None)
-    return redirect(url_for("login_page"))
-
-if __name__ == "__main__":
-    setup_database()  # Run once to set up the database
-    app.run(debug=True)
+    return redirect(url_for("auth.login_page"))
