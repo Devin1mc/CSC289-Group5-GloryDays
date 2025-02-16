@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: white;
+}
+
+form {
+    background: grey;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+    background: #e22f28;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #ff9d22;
+}
+
+button:hover{
+    filter: brightness(1.2);
+    scale: 110%;
+}
