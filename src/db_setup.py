@@ -1,6 +1,6 @@
 """
 Filename: db_setup.py
-Date: February 4, 2025
+Updated Date: February 22, 2025
 Programmer: Terry Wiggins
 Purpose: This program provides a command-line interface (CLI) for managing an inventory of video games using an SQLite database.
 It allows users to add new items, retrieve item details by SKU, update stock levels, delete inventory items, and list all stored items.
@@ -13,16 +13,19 @@ The system automatically generates SKUs in the format XXXY-ZK, where:
 
 import sqlite3
 
+
 # Database connection
 def get_db_connection():
     conn = sqlite3.connect("inventory.db")
     conn.row_factory = sqlite3.Row
     return conn
 
-# Initialize database
+
+# Initialize database and insert sample data if needed
 def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
+    # Create inventory table
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS inventory (
         sku TEXT PRIMARY KEY,
@@ -33,16 +36,47 @@ def init_db():
         stock INTEGER NOT NULL
     )
     ''')
+
+    # Create the sales table for tracking sales
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sales (
+            sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sku TEXT NOT NULL,
+            quantity INTEGER NOT NULL,
+            sale_price REAL NOT NULL,
+            sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (sku) REFERENCES inventory(sku)
+        )
+        ''')
+
+    # Insert sample data into inventory if table is empty
+    cursor.execute("SELECT COUNT(*) FROM inventory")
+    count = cursor.fetchone()[0]
+    if count == 0:
+        sample_items = [
+            ("WDG001", "Widget", "Xbox", 1, "New", 50),
+            ("GDG001", "Gadget", "PlayStation", 1, "Used", 30),
+            ("TL001", "Tool", "PC", 1, "New", 20)
+        ]
+        cursor.executemany(
+            "INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock) VALUES (?, ?, ?, ?, ?, ?)",
+            sample_items
+        )
+        print("Sample inventory data inserted.")
+
     conn.commit()
     conn.close()
+
 
 # SKU Generation
 def generate_sku(base_id, platform, packaging, quality):
     return f"{base_id}{platform}-{packaging}{quality}"
 
+
 # Mappings
 platform_map = {"1": "Xbox", "2": "PlayStation", "3": "PC", "4": "Others"}
 quality_map = {"G": "Good", "L": "Like New", "O": "Old"}
+
 
 # List Base Item IDs
 def list_base_ids():
@@ -116,7 +150,7 @@ def add_item():
 
 # This function will retrieve item by SKU
 def get_item():
-    sku = input("Enter SKU to retrieve: ").upper() # Convert the input to uppercase
+    sku = input("Enter SKU to retrieve: ").upper()  # Convert the input to uppercase
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM inventory WHERE sku = ?", (sku,))
@@ -128,6 +162,7 @@ def get_item():
               f"Packaging: {'Yes' if item['original_packaging'] else 'No'}, Quality: {item['quality']}, Stock: {item['stock']}\n")
     else:
         print("Item not found.")
+
 
 # This function will update stock
 def update_stock():
@@ -141,6 +176,7 @@ def update_stock():
     conn.close()
     print(f"Stock updated for SKU {sku}.")
 
+
 # This function will delete item
 def delete_item():
     sku = input("Enter SKU to delete: ")
@@ -150,6 +186,7 @@ def delete_item():
     conn.commit()
     conn.close()
     print(f"Item with SKU {sku} deleted.")
+
 
 # This function will list all items
 def list_inventory():
@@ -167,6 +204,7 @@ def list_inventory():
         print()
     else:
         print("No inventory found.")
+
 
 # CLI menu
 def main():
@@ -199,6 +237,7 @@ def main():
             break
         else:
             print("Invalid option. Try again.")
+
 
 if __name__ == "__main__":
     main()
