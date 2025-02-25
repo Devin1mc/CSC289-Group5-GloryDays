@@ -14,6 +14,7 @@ def setup_database():
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             employee_id TEXT UNIQUE NOT NULL,
+            role TEXT DEFAULT 'user',
             password_hash TEXT NOT NULL
         )
     ''')
@@ -43,6 +44,7 @@ def login():
     if result and password_hash == result[0]:
         # Save the user in session before redirecting
         session["user"] = employee_id
+        session["role"] = result[1]
         return redirect(url_for("auth.inventory_page"))
     else:
         return "Invalid Employee ID or Password."
@@ -54,14 +56,15 @@ def register():
     employee_id = request.form["employee_id"]
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode()).hexdigest()
+    role = request.form.get("role", "user") #Get role from form, default to user.
 
     conn = sqlite3.connect("login_database.db")
     cursor = conn.cursor()
 
     try:
         cursor.execute(
-            "INSERT INTO users (first_name, last_name, employee_id, password_hash) VALUES (?, ?, ?, ?)", 
-            (first_name, last_name, employee_id, password_hash)
+            "INSERT INTO users (first_name, last_name, employee_id, password_hash, role) VALUES (?, ?, ?, ?, ?)",
+            (first_name, last_name, employee_id, password_hash, role),
         )
         conn.commit()
         conn.close()

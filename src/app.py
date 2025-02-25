@@ -75,6 +75,13 @@ def inventory_data():
     items_list = [dict(item) for item in items]
     return jsonify(items_list)
 
+@app.route('/admin')
+def admin_page():
+    # Basic session check (replace with proper authentication)
+    if 'user' in session:
+        return render_template('admin.html')
+    else:
+        return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.run(debug=True)
