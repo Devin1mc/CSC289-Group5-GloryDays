@@ -1,27 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="admin.css">
     <title>Admin Panel</title>
     <a href="/logout" class="logout">Logout</a>
 </head>
 <body>
+
     <h1>Admin Control Panel</h1>
 
     <p>Welcome to the admin area.</p>
 
-    <h2>Inventory Management</h2>
-    <ul>
-        <li><a href="/inventory">View Inventory</a></li>
-        <li><a href="/add_inventory">Add Item</a></li>
-        <li><a href="/update_inventory">Update Item</a></li>
-        <li><a href="/delete_inventory">Delete Item</a></li>
-    </ul>
+    <div class="container">
 
-    <h2>Sales Management</h2>
-    <ul>
-        <li><a href="/sales" class="px-4 py-2 bg-green-600 text-white rounded-md">View Sales</a></li>
-    </ul>
+        <!-- Left Sidebar for Inventory and Sales Management -->
+        <div class="sidebar-left">
+            <h2>Inventory Management</h2>
+            <ul>
+                <li><a href="/inventory">View Inventory</a></li>
+                <li><a href="/add_inventory">Add Item</a></li>
+                <li><a href="/update_inventory">Update Item</a></li>
+                <li><a href="/delete_inventory">Delete Item</a></li>
+            </ul>
+
+            <h2>Sales Management</h2>
+            <ul>
+                <li><a href="/sales" class="bg-green-600">View Sales</a></li>
+            </ul>
+        </div>
+
+        <!-- Right Sidebar for User List -->
+        <div class="sidebar-right">
+            <h2>User List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
 </html>

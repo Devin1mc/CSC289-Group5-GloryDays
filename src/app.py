@@ -79,10 +79,16 @@ def inventory_data():
 def admin_page():
     # Basic session check (replace with proper authentication)
     if 'user' in session:
-        return render_template('admin.html')
+        # Fetch the list of users and their roles from the database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username, role FROM users")
+        users = cursor.fetchall()
+        conn.close()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        # Pass the list of users to the admin template
+        return render_template('admin.html', users=users)
+
 
 @app.route('/inventory')
 def inventory_page():
@@ -98,3 +104,5 @@ def inventory_page():
     # Return the inventory data as JSON
     return jsonify(inventory_list)
 
+if __name__ == "__main__":
+    app.run(debug=True)
