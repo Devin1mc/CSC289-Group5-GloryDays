@@ -83,3 +83,18 @@ def admin_page():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route('/inventory')
+def inventory_page():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM inventory")
+    inventory = cursor.fetchall()
+    conn.close()
+
+    # Convert SQLite Row objects to dictionaries for easier access in templates
+    inventory_list = [dict(item) for item in inventory]
+    
+    # Return the inventory data as JSON
+    return jsonify(inventory_list)
+
