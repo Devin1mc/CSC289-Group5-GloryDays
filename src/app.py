@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash
 from login import auth_bp, setup_database
 import sqlite3
 from db_setup import get_db_connection, init_db
@@ -77,17 +77,20 @@ def inventory_data():
 
 @app.route('/admin')
 def admin_page():
-    # Basic session check (replace with proper authentication)
-    if 'user' in session:
-        # Fetch the list of users and their roles from the database
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, username, role FROM users")
-        users = cursor.fetchall()
-        conn.close()
+    # Check if the user is logged in and has an admin role
+    if 'user' not in session or session.get('role') != 'admin':
+        flash("You don't have permission to view this page.", 'danger')
+        return redirect(url_for('auth_bp.login'))  # Redirect to the login page if not logged in or not an admin
 
-        # Pass the list of users to the admin template
-        return render_template('admin.html', users=users)
+    # Fetch the list of users and their roles from the database
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, role FROM users")
+    users = cursor.fetchall()
+    conn.close()
+
+    # Pass the list of users to the admin template
+    return render_template('admin.html', users=users)
 
 
 @app.route('/inventory')
@@ -103,6 +106,37 @@ def inventory_page():
     
     # Return the inventory data as JSON
     return jsonify(inventory_list)
+
+@app.route('/remove_user/<int:user_id>', methods=['POST'])
+def delete_user_route(user_id):
+    # Check if the current user is logged in and is an admin
+    if 'user' not in session or session.get('role') != 'admin':
+        flash("You don't have permission to perform this action.", 'danger')
+        return redirect(url_for('admin_page'))  # Redirect back to the admin page if not an admin
+
+    # Deleting the user from the database
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if the user exists
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            flash("User not found.", 'danger')
+            return redirect(url_for('admin_page'))  # Redirect back if user not found
+
+        # Delete the user
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        conn.close()
+
+        flash('User successfully removed.', 'success')
+    except Exception as e:
+        flash(f"Error occurred: {e}", 'danger')
+
+    return redirect(url_for('admin_page'))  # Redirect back to the admin page
+
 
 if __name__ == "__main__":
     app.run(debug=True)

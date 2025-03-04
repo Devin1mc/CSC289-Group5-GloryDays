@@ -67,7 +67,7 @@ ul li a.bg-green-600:hover {
     background-color: #2ecc71;
 }
 
-/* Logout button - move to top right */
+/* Logout button */
 a.logout {
     position: absolute;
     top: 20px;
@@ -83,6 +83,25 @@ a.logout {
 }
 
 a.logout:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Remove button styling */
+.remove-btn {
+    cursor: pointer;
+    font-size: 18px;
+    color: #e74c3c;
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #e74c3c;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-block;
+}
+
+.remove-btn:hover {
     background-color: #e74c3c;
     color: white;
 }
