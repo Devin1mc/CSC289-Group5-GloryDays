@@ -5,9 +5,16 @@ import hashlib
 # Create a blueprint for authentication routes
 auth_bp = Blueprint('auth', __name__)
 
+# Database connection
+def get_user_connection():
+    user_conn = sqlite3.connect("login_database.db")
+    user_conn.row_factory = sqlite3.Row
+    return user_conn
+
 def setup_database():
-    conn = sqlite3.connect("login_database.db")
-    cursor = conn.cursor()
+    print("Running setup_database()...")  # ✅ Debugging statement
+    user_conn = sqlite3.connect("login_database.db")
+    cursor = user_conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,8 +25,9 @@ def setup_database():
             password_hash TEXT NOT NULL
         )
     ''')
-    conn.commit()
-    conn.close()
+    user_conn.commit()
+    user_conn.close()
+    print("Database setup complete!")  # ✅ Debugging statement
 
 @auth_bp.route("/")
 def login_page():
@@ -35,11 +43,11 @@ def login():
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-    conn = sqlite3.connect("login_database.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT password_hash FROM users WHERE employee_id = ?", (employee_id,))
+    user_conn = sqlite3.connect("login_database.db")
+    cursor = user_conn.cursor()
+    cursor.execute("SELECT password_hash, role FROM users WHERE employee_id = ?", (employee_id,))
     result = cursor.fetchone()
-    conn.close()
+    user_conn.close()
 
     if result and password_hash == result[0]:
         # Save the user in session before redirecting
@@ -58,16 +66,16 @@ def register():
     password_hash = hashlib.sha256(password.encode()).hexdigest()
     role = request.form.get("role", "user") #Get role from form, default to user.
 
-    conn = sqlite3.connect("login_database.db")
-    cursor = conn.cursor()
+    user_conn = sqlite3.connect("login_database.db")
+    cursor = user_conn.cursor()
 
     try:
         cursor.execute(
             "INSERT INTO users (first_name, last_name, employee_id, password_hash, role) VALUES (?, ?, ?, ?, ?)",
             (first_name, last_name, employee_id, password_hash, role),
         )
-        conn.commit()
-        conn.close()
+        user_conn.commit()
+        user_conn.close()
         return redirect(url_for("auth.login_page"))
     except sqlite3.IntegrityError:
         return "Employee ID already exists."

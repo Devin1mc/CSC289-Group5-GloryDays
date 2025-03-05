@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash
-from login import auth_bp, setup_database
+from login import auth_bp, setup_database, get_user_connection
 import sqlite3
 from db_setup import get_db_connection, init_db
 
@@ -83,11 +83,11 @@ def admin_page():
         return redirect(url_for('auth_bp.login'))  # Redirect to the login page if not logged in or not an admin
 
     # Fetch the list of users and their roles from the database
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, username, role FROM users")
+    user_conn = get_user_connection()
+    cursor = user_conn.cursor()
+    cursor.execute("SELECT id, employee_id, first_name, last_name, role FROM users")
     users = cursor.fetchall()
-    conn.close()
+    user_conn.close()
 
     # Pass the list of users to the admin template
     return render_template('admin.html', users=users)
@@ -116,8 +116,8 @@ def delete_user_route(user_id):
 
     # Deleting the user from the database
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        user_conn = get_db_connection()
+        cursor = user_conn.cursor()
 
         # Check if the user exists
         cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
@@ -128,8 +128,8 @@ def delete_user_route(user_id):
 
         # Delete the user
         cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
-        conn.commit()
-        conn.close()
+        user_conn.commit()
+        user_conn.close()
 
         flash('User successfully removed.', 'success')
     except Exception as e:
