@@ -46,7 +46,9 @@
         <span class="text-lg font-semibold">Employee: John Doe</span>
       </div>
       <!-- Link to Sales Page -->
-      <a href="/sales" class="px-4 py-2 bg-green-600 text-white rounded-md">View Sales</a>
+      {% if session.role == 'admin' %}
+        <a href="{{ url_for('admin_page') }}">Admin</a>
+      {% endif %}
     </div>
 
     <!-- Search and Add Item -->
