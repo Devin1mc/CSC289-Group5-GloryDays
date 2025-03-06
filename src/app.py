@@ -93,20 +93,6 @@ def admin_page():
     return render_template('admin.html', users=users)
 
 
-@app.route('/inventory')
-def inventory_page():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM inventory")
-    inventory = cursor.fetchall()
-    conn.close()
-
-    # Convert SQLite Row objects to dictionaries for easier access in templates
-    inventory_list = [dict(item) for item in inventory]
-    
-    # Return the inventory data as JSON
-    return jsonify(inventory_list)
-
 @app.route('/remove_user/<int:user_id>', methods=['POST'])
 def delete_user_route(user_id):
     # Check if the current user is logged in and is an admin
@@ -116,7 +102,7 @@ def delete_user_route(user_id):
 
     # Deleting the user from the database
     try:
-        user_conn = get_db_connection()
+        user_conn = get_user_connection()
         cursor = user_conn.cursor()
 
         # Check if the user exists
