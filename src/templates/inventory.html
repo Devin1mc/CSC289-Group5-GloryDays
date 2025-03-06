@@ -4,50 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventory Management</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='inventory.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <style>
-    .dialog {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-    .dialog-content {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 2rem;
-      border-radius: 0.5rem;
-      width: 90%;
-      max-width: 500px;
-      z-index: 1001;
-    }
-    .dialog.active {
-      display: block;
-    }
-    .condition-new { color: #059669; }
-    .condition-used { color: #D97706; }
-    .condition-refurbished { color: #2563EB; }
-    .condition-damaged { color: #DC2626; }
-  </style>
 </head>
 <body class="bg-gray-50">
   <div class="max-w-4xl mx-auto p-4">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-4">
-        <img src="/api/placeholder/48/48" alt="Glory Days Logo" class="w-12 h-12 object-contain">
-        <span class="text-lg font-semibold">Employee: John Doe</span>
+        <!-- Logo Display -->
+        <img src="/static/images/GloryDaysLogoCircle.jpg" alt="Glory Days Logo" class="logo" />
+        <span class="text-lg font-semibold">Employee: {{ first_name }}</span>
       </div>
-      <!-- Link to Sales Page -->
+      <!-- Link to Admin Page -->
       {% if session.role == 'admin' %}
-        <a href="{{ url_for('admin_page') }}">Admin</a>
+        <button class="admin-btn" onclick="window.location.href='{{ url_for('admin_page') }}'">Admin</button>
       {% endif %}
     </div>
 

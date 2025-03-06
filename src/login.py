@@ -45,14 +45,16 @@ def login():
 
     user_conn = sqlite3.connect("login_database.db")
     cursor = user_conn.cursor()
-    cursor.execute("SELECT password_hash, role FROM users WHERE employee_id = ?", (employee_id,))
+    cursor.execute("SELECT first_name, last_name, password_hash, role FROM users WHERE employee_id = ?", (employee_id,))
     result = cursor.fetchone()
     user_conn.close()
 
-    if result and password_hash == result[0]:
-        # Save the user in session before redirecting
+    if result and password_hash == result[2]:
+        # Store the user's full name and role in session
         session["user"] = employee_id
-        session["role"] = result[1]
+        session["first_name"] = result[0]
+        session["last_name"] = result[1]
+        session["role"] = result[3]
         return redirect(url_for("auth.inventory_page"))
     else:
         return "Invalid Employee ID or Password."
@@ -83,8 +85,12 @@ def register():
 @auth_bp.route("/inventory")
 def inventory_page():
     if "user" in session:
-        # Ensure the inventory template name matches your actual file (changed to inventory.html)
-        return render_template("inventory.html")
+        # Get the user's first and last name from the session
+        first_name = session.get("first_name")
+        last_name = session.get("last_name")
+        
+        # Pass the name to the template
+        return render_template("inventory.html", first_name=first_name, last_name=last_name)
     else:
         return redirect(url_for("auth.login_page"))
 
