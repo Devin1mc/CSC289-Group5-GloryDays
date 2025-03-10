@@ -123,6 +123,29 @@ def delete_user_route(user_id):
 
     return redirect(url_for('admin_page'))  # Redirect back to the admin page
 
+# Route to handle sorting of inventory data based on user-selected criteria
+@app.route('/inventory_data/sort', methods=['GET'])
+def inventory_sort():
+    # Get sorting parameters from request
+    sort_by = request.args.get('sort_by', 'name')  
+    order = request.args.get('order', 'asc')  
+    order = 'ASC' if order == 'asc' else 'DESC'
+
+    # Define valid columns that can be used for sorting
+    valid_sort_columns = ['name', 'sku', 'console', 'condition']
+    if sort_by not in valid_sort_columns:
+        return jsonify({"error": "Invalid sort parameter"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM inventory ORDER BY {sort_by} {order}")
+    items = cursor.fetchall()
+    conn.close()
+
+    # Convert SQLite Row objects to dictionaries
+    items_list = [dict(item) for item in items]
+    return jsonify(items_list)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
