@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +7,31 @@
   <!-- Tailwind CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50">
+<body style="background: linear-gradient(to bottom, #efeded, #3b0404);">
   <div class="max-w-4xl mx-auto p-4">
     <!-- Header with Logo -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-4">
-        <img src="/Static\Images/Glory%20Days%20Logo%20Circle%20(Transparent).jpg" alt="Glory Days Logo" class="w-14 h-14 object-contain rounded-md">
-        <h1 class="text-2xl font-bold text-blue-700">Recent Sales</h1>
+    <div class="flex flex-col mb-6">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-4">
+          <img src="/static/images/GloryDaysLogoCircle.JPG" alt="Glory Days Logo" class="w-32 h-32 object-contain rounded-md">
+          <h1 class="text-4xl font-serif font-extrabold text-red-900 drop-shadow-md">Recent Sales</h1>
+        </div>
+        <a href="/inventory" class="px-4 py-2 bg-green-300 text-green-900 rounded-md hover:bg-green-700 transition duration-300">
+          Back to Inventory
+        </a>
       </div>
-      <a href="/inventory" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-        Back to Inventory
-      </a>
+      <!-- Search Bar with Button -->
+      <div class="flex">
+        <input type="text" id="searchBar" placeholder="Search by SKU or Game Name..." class="w-full p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button id="searchButton" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-800 transition duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+          </svg>
+          Search
+        </button>
+      </div>
     </div>
+    
 
     <!-- Sales Table -->
     <div class="overflow-x-auto">
@@ -26,6 +39,7 @@
         <thead class="bg-blue-600 text-white">
           <tr>
             <th class="py-3 px-4 text-left">Item Code</th>
+            <th class="py-3 px-4 text-left">Game Title</th>
             <th class="py-3 px-4 text-left">Condition</th>
             <th class="py-3 px-4 text-right">Quantity</th>
             <th class="py-3 px-4 text-right">Sale Price</th>
@@ -36,6 +50,7 @@
           {% for sale in sales %}
           <tr class="hover:bg-gray-50">
             <td class="py-2 px-4">{{ sale.sku }}</td>
+            <td class="py-2 px-4">{{ sale.item_name }}</td>
             <td class="py-2 px-4">{{ sale.condition }}</td>
             <td class="py-2 px-4 text-right">{{ sale.total_quantity }}</td>
             <td class="py-2 px-4 text-right">${{ '%.2f'|format(sale.avg_sale_price) }}</td>
@@ -43,13 +58,59 @@
           </tr>
           {% endfor %}
           {% if sales|length == 0 %}
-          <tr>
-            <td class="py-2 px-4" colspan="5">No sales recorded.</td>
+          <tr id="noResultRow">
+            <td class="py-2 px-4" colspan="6">No sales recorded.</td>
           </tr>
           {% endif %}
         </tbody>
       </table>
     </div>
   </div>
+
+  <script>
+    // Define a reusable search function
+    function performSearch() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      let visibleCount = 0;
+      rows.forEach(row => {
+        // Skip the "No results" row if it exists
+        if (row.id === 'noResultRow') return;
+      
+        const sku = row.cells[0].textContent.toLowerCase();
+        const gameName = row.cells[1].textContent.toLowerCase();
+        if (sku.includes(query) || gameName.includes(query)) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    // Handle "no results found" message
+    let noResultRow = document.getElementById('noResultRow');
+    if (visibleCount === 0) {
+      if (!noResultRow) {
+        noResultRow = document.createElement('tr');
+        noResultRow.id = 'noResultRow';
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.className = "py-2 px-4";
+        td.textContent = "No results found.";
+        noResultRow.appendChild(td);
+        document.querySelector('table tbody').appendChild(noResultRow);
+      }
+    } else {
+      if (noResultRow) {
+        noResultRow.remove();
+      }
+    }
+  }
+
+  // Trigger search on input event
+  document.getElementById('searchBar').addEventListener('input', performSearch);
+  // Trigger search when the search button is clicked
+  document.getElementById('searchButton').addEventListener('click', performSearch);
+  </script>
 </body>
 </html>
+

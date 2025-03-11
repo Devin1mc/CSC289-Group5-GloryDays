@@ -50,7 +50,8 @@ def sales_page():
     cursor = conn.cursor()
     cursor.execute("""
         SELECT 
-            sales.sku, 
+            sales.sku,
+            inventory.name as item_name, 
             date(sales.sale_date) as sale_date,
             inventory.quality as condition,
             SUM(sales.quantity) as total_quantity,
