@@ -40,6 +40,15 @@
       </button>
     </div>
 
+    <!-- Sorting Controls -->
+    <div class="flex gap-4 mb-6">
+      <button onclick="sortItems('name')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Name</button>
+      <button onclick="sortItems('sku')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by SKU</button>
+      <button onclick="sortItems('condition')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Condition</button>
+      <button onclick="sortItems('console')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Console</button>
+      <button onclick="resetFilters()" class="px-4 py-2 bg-red-600 text-white rounded-md">Reset Filters</button>
+    </div>
+
     <!-- Inventory List -->
     <div id="itemsList" class="space-y-4">
       <!-- Inventory items will be rendered here -->
@@ -236,6 +245,36 @@
       const prefix = matches[1];
       const nextNum = parseInt(matches[2]) + 1;
       return `${prefix}${nextNum.toString().padStart(3, '0')}`;
+    }
+
+    // Function to sort inventory items based on the selected criteria
+    function sortItems(criteria) {
+      // Sorts the items array in ascending order based on the given criteria (e.g., name, SKU, console, condition)
+      items.sort((a, b) => {
+        if (a[criteria] > b[criteria]) return 1;
+        if (a[criteria] < b[criteria]) return -1;
+        return 0;
+      });
+      updateLocalStorage();
+      renderItems();
+    }
+
+    // Function to reset filters and display the full inventory list
+    function resetFilters() {
+    // Clear input fields
+    document.getElementById('searchInput').value = '';
+    
+    // Clear dropdown filters (if applicable)
+    document.getElementById('consoleFilter').value = '';
+    document.getElementById('conditionFilter').value = '';
+
+    // Fetch the full inventory list and re-render
+    fetch('/inventory_data')
+        .then(response => response.json())
+        .then(data => {
+            renderItems(data); // Ensure this updates the displayed inventory
+        })
+        .catch(error => console.error("Error fetching inventory:", error));
     }
 
     function incrementQuantity() {
