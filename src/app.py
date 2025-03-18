@@ -143,10 +143,6 @@ def delete_user_route(user_id):
 
     return redirect(url_for('admin_page'))  # Redirect back to the admin page
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
-    
 @app.route('/api/total_revenue')
 def api_total_revenue():
     conn = get_db_connection()
@@ -202,3 +198,7 @@ def api_previous_month_sales():
         "total_revenue": total_revenue,
         "sales_details": [dict(row) for row in sales_details]
     })
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    
