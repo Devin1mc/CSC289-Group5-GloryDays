@@ -68,7 +68,7 @@ ul li a.bg-green-600:hover {
 }
 
 /* Logout button */
-a.logout {
+.logout-btn {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -82,7 +82,7 @@ a.logout {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-a.logout:hover {
+.logout-btn:hover {
     background-color: #e74c3c;
     color: white;
 }

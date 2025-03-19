@@ -1,295 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Management</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='inventory.css') }}">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='inventory.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <!-- This is for the label font -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body class="bg-gray-50">
-  <div class="max-w-4xl mx-auto p-4">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-4">
-        <!-- Logo Display -->
-        <img src="/static/images/GloryDaysLogoCircle.jpg" alt="Glory Days Logo" class="logo" />
+
+<body>
+    <!-- Inventory Header -->
+    <div class="inventory-header">
+        <img src="{{ url_for('static', filename='images/GloryDaysLogoCircle.jpg') }}" alt="Glory Days Logo" class="logo mb-3" />
         <span class="text-lg font-semibold">Employee: {{ first_name }}</span>
-      </div>
-      <!-- Link to Admin Page -->
-      {% if session.role == 'admin' %}
-        <button class="admin-btn" onclick="window.location.href='{{ url_for('admin_page') }}'">Admin</button>
-      {% endif %}
     </div>
-
-    <!-- Search and Add Item -->
-    <div class="flex gap-4 mb-6">
-      <div class="relative flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2 border rounded-md" placeholder="Search by name or item code...">
-      </div>
-      <button onclick="addItem()" class="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Add Item
-      </button>
-    </div>
-
-    <!-- Sorting Controls -->
-    <div class="flex gap-4 mb-6">
-      <button onclick="sortItems('name')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Name</button>
-      <button onclick="sortItems('sku')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by SKU</button>
-      <button onclick="sortItems('condition')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Condition</button>
-      <button onclick="sortItems('console')" class="px-4 py-2 bg-gray-600 text-white rounded-md">Sort by Console</button>
-      <button onclick="resetFilters()" class="px-4 py-2 bg-red-600 text-white rounded-md">Reset Filters</button>
-    </div>
-
-    <!-- Inventory List -->
-    <div id="itemsList" class="space-y-4">
-      <!-- Inventory items will be rendered here -->
-    </div>
-  </div>
-
-  <!-- Edit Dialog -->
-  <div id="editDialog" class="dialog">
-    <div class="dialog-content">
-      <h2 class="text-lg font-semibold mb-4">Update Item</h2>
-      <div class="space-y-4">
-        <div>
-          <label class="text-sm font-medium mb-1 block">Item Code</label>
-          <input type="text" id="editCode" class="w-full p-2 border rounded-md">
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-1 block">Name</label>
-          <input type="text" id="editName" class="w-full p-2 border rounded-md">
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-1 block">Quantity</label>
-          <div class="flex gap-2">
-            <button onclick="decrementQuantity()" class="px-3 py-2 border rounded-md">-</button>
-            <input type="number" id="editQuantity" class="w-20 text-center p-2 border rounded-md">
-            <button onclick="incrementQuantity()" class="px-3 py-2 border rounded-md">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-1 block">Price</label>
-          <input type="number" id="editPrice" step="0.01" class="w-full p-2 border rounded-md">
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-1 block">Condition</label>
-          <select id="editCondition" class="w-full p-2 border rounded-md">
-            <option value="New">New</option>
-            <option value="Used">Used</option>
-            <option value="Refurbished">Refurbished</option>
-            <option value="Damaged">Damaged</option>
-          </select>
-        </div>
-        <div class="flex justify-end gap-2 mt-6">
-          <button onclick="closeDialog()" class="px-4 py-2 border rounded-md">Cancel</button>
-          <button onclick="saveItem()" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Default static inventory array
-    const defaultItems = [
-      { id: 1, sku: 'WDG001', name: 'Widget', stock: 50, price: 9.99, condition: 'New' },
-      { id: 2, sku: 'GDG001', name: 'Gadget', stock: 30, price: 19.99, condition: 'Used' },
-      { id: 3, sku: 'TL001', name: 'Tool', stock: 20, price: 15.99, condition: 'New' }
-    ];
-
-    // Load inventory from localStorage if exists; otherwise use defaultItems
-    let items = [];
-    function loadInventory() {
-      const saved = localStorage.getItem('inventoryItems');
-      if (saved) {
-        items = JSON.parse(saved);
-      } else {
-        items = defaultItems;
-        updateLocalStorage();
-      }
-      renderItems();
-    }
-
-    // Save current items array to localStorage
-    function updateLocalStorage() {
-      localStorage.setItem('inventoryItems', JSON.stringify(items));
-    }
-
-    // Render inventory items
-    function renderItems() {
-      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      const filteredItems = items.filter(item =>
-        item.name.toLowerCase().includes(searchQuery) ||
-        item.sku.toLowerCase().includes(searchQuery)
-      );
-      const itemsList = document.getElementById('itemsList');
-      itemsList.innerHTML = filteredItems.map(item => `
-        <div class="bg-white rounded-lg shadow-sm border">
-          <div class="flex items-center justify-between p-4">
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-1">
-                <span class="text-sm font-mono text-gray-500">#${item.sku}</span>
-                <h3 class="font-semibold">${item.name}</h3>
-              </div>
-              <p class="text-sm text-gray-600">
-                Stock: ${item.stock} | Price: $${parseFloat(item.price).toFixed(2)} | 
-                Condition: <span class="font-medium condition-${item.condition.toLowerCase()}">${item.condition}</span>
-              </p>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="editItem(${item.id})" class="p-2 border rounded-md">
-                <!-- Edit Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-              <button onclick="removeItem(${item.id})" class="p-2 bg-red-600 text-white rounded-md">
-                <!-- Remove Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 6h18"></path>
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                </svg>
-              </button>
-              <!-- Sell button that calls backend to record sale -->
-              <button onclick="sellItem('${item.sku}')" class="px-4 py-2 bg-blue-600 text-white rounded-md">Sell</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Function to process a sale via backend, update static array, and persist changes
-    function sellItem(sku) {
-      const item = items.find(item => item.sku === sku);
-      if (!item) return;
-      // Use the backend sell endpoint to process the sale
-      fetch('/sell', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sku: sku, quantity: 1, sale_price: item.price })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          // Update local item stock with new value returned from backend
-          item.stock = data.new_stock;
-          updateLocalStorage();
-          renderItems();
-          alert("Sale successful!");
-        }
-      })
-      .catch(err => console.error("Sale error:", err));
-    }
-
-    // Optional functions for editing, removing, and adding items (update localStorage accordingly)
-    let currentEditId = null;
-    function editItem(id) {
-      currentEditId = id;
-      const item = items.find(item => item.id === id);
-      document.getElementById('editCode').value = item.sku;
-      document.getElementById('editName').value = item.name;
-      document.getElementById('editQuantity').value = item.stock;
-      document.getElementById('editPrice').value = item.price;
-      document.getElementById('editCondition').value = item.condition;
-      document.getElementById('editDialog').classList.add('active');
-    }
-
-    function closeDialog() {
-      document.getElementById('editDialog').classList.remove('active');
-      currentEditId = null;
-    }
-
-    function removeItem(id) {
-      if (confirm('Are you sure you want to remove this item?')) {
-        items = items.filter(item => item.id !== id);
-        updateLocalStorage();
-        renderItems();
-      }
-    }
-
-    function addItem() {
-      const newItem = {
-        id: items.length + 1,
-        sku: generateNextCode(),
-        name: 'New Item',
-        stock: 0,
-        price: 0.00,
-        condition: 'New'
-      };
-      items.push(newItem);
-      updateLocalStorage();
-      renderItems();
-      editItem(newItem.id);
-    }
-
-    function generateNextCode() {
-      const sortedItems = [...items].sort((a, b) => 
-        a.sku.localeCompare(b.sku, undefined, { numeric: true, sensitivity: 'base' })
-      );
-      const lastItem = sortedItems[sortedItems.length - 1];
-      if (!lastItem) return 'ITEM001';
-      const matches = lastItem.sku.match(/([A-Za-z]+)(\d+)/);
-      if (!matches) return 'ITEM001';
-      const prefix = matches[1];
-      const nextNum = parseInt(matches[2]) + 1;
-      return `${prefix}${nextNum.toString().padStart(3, '0')}`;
-    }
-
-    // Function to sort inventory items based on the selected criteria
-    function sortItems(criteria) {
-      // Sorts the items array in ascending order based on the given criteria (e.g., name, SKU, console, condition)
-      items.sort((a, b) => {
-        if (a[criteria] > b[criteria]) return 1;
-        if (a[criteria] < b[criteria]) return -1;
-        return 0;
-      });
-      updateLocalStorage();
-      renderItems();
-    }
-
-    // Function to reset filters and display the full inventory list
-    function resetFilters() {
-    // Clear input fields
-    document.getElementById('searchInput').value = '';
     
-    // Clear dropdown filters (if applicable)
-    document.getElementById('consoleFilter').value = '';
-    document.getElementById('conditionFilter').value = '';
+    <!-- Search Bar -->
+    <div class="search-container mt-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by SKU or Game Name" onkeyup="filterInventory()" />
+    </div>
 
-    // Fetch the full inventory list and re-render
-    fetch('/inventory_data')
-        .then(response => response.json())
-        .then(data => {
-            renderItems(data); // Ensure this updates the displayed inventory
-        })
-        .catch(error => console.error("Error fetching inventory:", error));
-    }
+    <!-- Add Item Button Outside Inventory Container -->
+        <button class="add-item-btn" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item</button>
 
-    function incrementQuantity() {
-      const input = document.getElementById('editQuantity');
-      input.value = (parseInt(input.value) || 0) + 1;
-    }
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    
+    <!-- Conditionally render Admin button -->
+    {% if session.role == 'admin' %}
+        <button class="admin-btn" onclick="window.location.href='{{ url_for('admin_page') }}'">Admin</button>
+    {% endif %}
 
-    function decrementQuantity() {
-      const input = document.getElementById('editQuantity');
-      input.value = Math.max(0, (parseInt(input.value) || 0) - 1);
-    }
+    <!-- Filter Buttons -->
+    <div class="filter-buttons text-center mt-4">
+        <button class="filter-btn" id="filter-sku">SKU</button>
+        <button class="filter-btn" id="filter-name">Name</button>
+        <button class="filter-btn" id="filter-platform">Platform</button>
+        <button class="filter-btn" id="filter-quality">Quality</button>
+        <button class="filter-btn reset-btn" id="reset-filters">Reset Filters</button>
+    </div>
 
-    // Event listeners for search input and page load
-    document.getElementById('searchInput').addEventListener('input', renderItems);
-    document.addEventListener('DOMContentLoaded', loadInventory);
-  </script>
+    <!-- Container for Inventory -->
+    <div class="container mt-4">
+      <!-- Container for Inventory Cards -->
+      <div id="inventoryList" class="inventory-container">
+          <!-- Inventory cards will be injected here -->
+      </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addItemForm">
+                        <div class="mb-3">
+                            <label for="sku" class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="sku" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="platform" class="form-label">Platform</label>
+                            <input type="text" class="form-control" id="platform" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="original_packaging" class="form-label">Original Packaging</label>
+                            <input type="checkbox" id="original_packaging">
+                        </div>
+                        <div class="mb-3">
+                            <label for="quality" class="form-label">Quality</label>
+                            <select class="form-select" id="quality">
+                                <option value="Good">Good</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Old">Old</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="stock" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editItemForm">
+                        <div class="mb-3">
+                            <label for="edit_sku" class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="edit_sku" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="edit_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_platform" class="form-label">Platform</label>
+                            <input type="text" class="form-control" id="edit_platform" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_original_packaging" class="form-label">Original Packaging</label>
+                            <input type="checkbox" id="edit_original_packaging">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_quality" class="form-label">Quality</label>
+                            <select class="form-select" id="edit_quality">
+                                <option value="Good">Good</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Old">Old</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_stock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="edit_stock" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Item</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Item Modal -->
+    <div class="modal fade" id="sellItemModal" tabindex="-1" aria-labelledby="sellItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sellItemModalLabel">Sell Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sellItemForm">
+                        <div class="mb-3">
+                            <label for="sell_sku" class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="sell_sku" required readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sell_quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="sell_quantity" required placeholder="Enter amount sold">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sell_price" class="form-label">Sale Price</label>
+                            <input type="number" class="form-control" id="sell_price" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Sell Item</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Add Item functionality
+        $('#addItemForm').on('submit', function(event) {
+            event.preventDefault();
+            let itemData = {
+                sku: $('#sku').val(),
+                name: $('#name').val(),
+                platform: $('#platform').val(),
+                original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,
+                quality: $('#quality').val(),
+                stock: $('#stock').val()
+            };
+
+            $.ajax({
+                url: '/add_inventory',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(itemData),
+                success: function(response) {
+                    alert(response.message);
+                    $('#addItemModal').modal('hide');
+                    loadInventory();  // Reload inventory
+                },
+                error: function(error) {
+                    alert("Error adding item: " + error.responseText);
+                }
+            });
+        });
+
+        // Edit Item functionality
+        $('#editItemForm').on('submit', function(event) {
+            event.preventDefault();
+            let itemData = {
+                sku: $('#edit_sku').val(),
+                name: $('#edit_name').val(),
+                platform: $('#edit_platform').val(),
+                original_packaging: $('#edit_original_packaging').prop('checked') ? 1 : 0,
+                quality: $('#edit_quality').val(),
+                stock: $('#edit_stock').val()
+            };
+
+            $.ajax({
+                url: '/update_inventory',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(itemData),
+                success: function(response) {
+                    alert(response.message);
+                    $('#editItemModal').modal('hide');
+                    loadInventory();  // Reload inventory
+                },
+                error: function(error) {
+                    alert("Error updating item: " + error.responseText);
+                }
+            });
+        });
+
+        // Sell Item functionality
+        $('#sellItemForm').on('submit', function(event) {
+            event.preventDefault();
+            let itemData = {
+                sku: $('#sell_sku').val(),
+                quantity: $('#sell_quantity').val(),
+                sale_price: $('#sell_price').val()
+            };
+        
+            $.ajax({
+                url: '/sell',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(itemData),
+                success: function(response) {
+                    alert(response.message);
+                    $('#sellItemModal').modal('hide');
+                    loadInventory();  // Reload inventory
+                },
+                error: function(error) {
+                    alert("Error selling item: " + error.responseText);
+                }
+            });
+        });
+
+        // Delete Item functionality
+        $(document).on('click', '.delete-btn', function() {
+          let sku = $(this).data('sku'); // Get SKU from button attribute
+
+          // Prompt user to type "Delete" to confirm
+          let confirmation = prompt(`Type "Delete" to confirm item removal:`);
+
+          if (confirmation === "Delete") {
+              $.ajax({
+                  url: '/delete_inventory',
+                  method: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify({ sku: sku }),
+                  success: function(response) {
+                      alert(response.message);
+                      loadInventory(); // Refresh inventory after deletion
+                  },
+                  error: function(error) {
+                      alert("Error deleting item: " + error.responseText);
+                  }
+              });
+          } else {
+              alert("Deletion canceled. You must type 'Delete' exactly to confirm.");
+          }
+      });
+
+        // Function to filter inventory by SKU or Game name as the user types
+        function filterInventory() {
+            let searchQuery = $('#searchInput').val().toLowerCase(); // Get the search input value
+            $('.inventory-item').each(function() {
+                let sku = $(this).find('.sku').text().toLowerCase(); // Get the SKU from the item card
+                let name = $(this).find('.game-name').text().toLowerCase(); // Get the Game name from the item card
+                if (sku.includes(searchQuery) || name.includes(searchQuery)) {
+                    $(this).show(); // Show matching items
+                } else {
+                    $(this).hide(); // Hide non-matching items
+                }
+            });
+        }
+
+        // Load Inventory function to display items as cards
+        let originalInventory = []; // Store the original inventory data
+
+        // Load Inventory function to fetch data and store original inventory
+        function loadInventory() {
+            $.ajax({
+                url: '/inventory_data',
+                method: 'GET',
+                success: function(data) {
+                    originalInventory = data; // Save original data
+                    displayInventory(data); // Display the inventory
+                }
+            });
+        }
+    
+        // Function to display inventory items
+        function displayInventory(data) {
+            let inventoryCards = '';
+            data.forEach(item => {
+                inventoryCards += `
+                    <div class="inventory-item">
+                        <p class="sku text-sm text-muted">#${item.sku}</p>
+                        <p class="game-name"><strong>Game:</strong> ${item.name}</p>
+                        <p><strong>Platform:</strong> ${item.platform}</p>
+                        <p><strong>Packaging:</strong> ${item.original_packaging ? 'Yes' : 'No'}</p>
+                        <p><strong>Quality:</strong> ${item.quality}</p>
+                        <p><strong>Stock:</strong> ${item.stock}</p>
+                        <p><strong>Price:</strong> $${item.price}</p>
+                        <div class="item-actions">
+                            <button class="btn btn-warning btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#editItemModal" 
+                                data-sku="${item.sku}" 
+                                data-name="${item.name}" 
+                                data-platform="${item.platform}" 
+                                data-packaging="${item.original_packaging}" 
+                                data-quality="${item.quality}" 
+                                data-stock="${item.stock}">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm sell-btn" data-bs-toggle="modal" data-bs-target="#sellItemModal" 
+                                data-sku="${item.sku}" 
+                                data-stock="${item.stock}"
+                                data-price="${item.price}">
+                                Sell
+                            </button>
+                            <button class="btn btn-dark btn-sm delete-btn" data-sku="${item.sku}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            $('#inventoryList').html(inventoryCards);
+        }
+    
+        // 🔹 Event listeners for filter buttons
+        $('#filter-sku').on('click', function() {
+            let sortedData = [...originalInventory].sort((a, b) => a.sku.localeCompare(b.sku));
+            displayInventory(sortedData);
+        });
+    
+        $('#filter-name').on('click', function() {
+            let sortedData = [...originalInventory].sort((a, b) => a.name.localeCompare(b.name));
+            displayInventory(sortedData);
+        });
+    
+        $('#filter-platform').on('click', function() {
+            let sortedData = [...originalInventory].sort((a, b) => a.platform.localeCompare(b.platform));
+            displayInventory(sortedData);
+        });
+    
+        $('#filter-quality').on('click', function() {
+            let sortedData = [...originalInventory].sort((a, b) => a.quality.localeCompare(b.quality));
+            displayInventory(sortedData);
+        });
+    
+        // 🔹 Reset Filters Button - Restores the original inventory list
+        $('#reset-filters').on('click', function() {
+            displayInventory(originalInventory);
+        });
+    
+        // 🔹 Load Inventory on Page Load
+        $(document).ready(function() {
+            loadInventory();
+        });
+
+        function logoutUser() {
+            fetch("{{ url_for('auth.logout') }}", {
+                method: "GET",
+                credentials: "same-origin"
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect to login page
+                }
+            })
+            .catch(error => console.error("Error logging out:", error));
+        }
+    </script>
 </body>
 </html>

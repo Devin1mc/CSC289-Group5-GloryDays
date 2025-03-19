@@ -1,244 +1,349 @@
-/* Dialog Styling */
-.dialog {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black for the overlay */
-    z-index: 1000;
-}
-
-.dialog-content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    width: 90%;
-    max-width: 500px;
-    z-index: 1001;
-}
-
-.dialog.active {
-    display: block;
-}
-
-/* Logo Styling */
-.logo {
-    max-width: 120px; /* Ensures the logo doesn’t grow too large */
-    height: auto;
-}
-
-/* Body Styling */
+/* Ensure the body and html take up the full viewport height */
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+    padding: 0;
+    overflow: hidden;  /* Prevent scrolling on the whole page */
 }
 
-body {
-    background: linear-gradient(to bottom, #a71010, #6e0000); /* Light to dark red gradient */
-    color: rgb(0, 0, 0); /* Text color */
-    overflow-x: hidden;
-    padding-top: 0; /* Removed top padding to move content up */
+/* Add Item Button Styling (Similar to Admin Button) */
+.add-item-btn {
+    background-color: #2563EB;           /* Blue color */
+    color: white;                        /* White text */
+    font-size: 1.125rem;                 /* Slightly larger font */
+    font-weight: 600;                    /* Bold text */
+    padding: 0.75rem 1.5rem;             /* Padding to make button the same size as Admin button */
+    border-radius: 0.5rem;               /* Rounded corners */
+    border: none;                        /* No border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for better appearance */
+    cursor: pointer;                    /* Change cursor on hover */
+    transition: all 0.3s ease-in-out;    /* Smooth transition for hover effect */
+    position: fixed;                     /* Fixed position */
+    bottom: 20px;                        /* Space from the bottom */
+    right: 20px;                         /* Space from the right */
+    z-index: 10;                         /* Ensure button stays on top */
 }
 
-/* Condition Classes */
-.condition-new { color: #059669; }
-.condition-used { color: #D97706; }
-.condition-refurbished { color: #2563EB; }
-.condition-damaged { color: #DC2626; }
-
-/* Items List Styling */
-#itemsList {
-    background-color: #2b185f;
-    border-radius: 0.5rem;
-    padding: 2rem; /* Increase padding inside the box */
-    max-height: 600px; /* Increase height to make it bigger */
-    overflow-y: auto;
-    margin-bottom: 2rem; /* Space below the items list */
-    width: 90%; /* Adjust width to be more spread out */
-    margin: 0 auto; /* Center the box horizontally */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+/* Add Item Button Hover Effect (Similar to Admin Button) */
+.add-item-btn:hover {
+    background-color: #1e4a9e;           /* Darker blue when hovered */
+    transform: scale(1.05);               /* Slightly enlarge the button */
 }
 
-/* Header Styling */
-header {
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    margin-bottom: 1rem; /* Reduced margin to move header up */
-}
-
-header .max-w-4xl {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header .flex {
-    display: flex;
-    align-items: center;
-}
-
-header .gap-4 {
-    gap: 1rem;
-}
-
-header .text-lg {
-    font-size: 1.125rem;
-    font-weight: 600;
-}
-
-/* Button Styling */
-button {
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-}
-
-button.bg-blue-600 {
-    background-color: #2563EB;
-    color: white;
-}
-
-button.bg-red-600 {
-    background-color: #DC2626;
-    color: white;
-}
-
-button:hover {
-    cursor: pointer;
+/* Add Item Button Focus Effect (Similar to Admin Button) */
+.add-item-btn:focus {
+    outline: none;                        /* Remove default focus outline */
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.6); /* Subtle blue outline */
 }
 
 /* Admin Button Styling */
 button.admin-btn {
-    padding: 0.75rem 1.5rem; /* Increased padding for a more prominent button */
-    background-color: #DC143C; /* Crimson red for the admin button */
-    color: white; /* White text */
-    font-size: 1.125rem; /* Slightly larger font size */
-    font-weight: 600; /* Bold text */
-    border-radius: 0.5rem; /* Rounded corners */
-    border: none; /* Remove default border */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-    cursor: pointer; /* Change the cursor on hover */
-    transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+    padding: 10px 15px;
+    background-color: #e48731;
+    color: white;
+    font-size: 1.125rem; /* Consistent font size */
+    font-weight: 600;    /* Same font weight */
+    border-radius: 0.5rem;
+    border: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;  /* Keep the admin button fixed to the right */
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Admin Button Hover Effect */
 button.admin-btn:hover {
-    background-color: #7122b2; /* Darker red when hovered */
-    transform: scale(1.05); /* Slightly enlarge the button */
+    background-color: #7122b2;
+    transform: scale(1.05);
 }
 
 /* Admin Button Focus Effect */
 button.admin-btn:focus {
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 0 0 4px rgba(75, 0, 126, 0.6); /* Add a subtle red outline */
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(75, 0, 126, 0.6);
 }
 
-/* Flex Styling */
-.flex {
+/* Logout Button Styling */
+.logout-btn {
+    position: fixed;               /* Fix the button in place */
+    top: 20px;                     /* Same top positioning as admin button */
+    right: 135px;                  /* Place logout button just left of admin button */
+    font-size: 1.125rem;           /* Match font size with admin button */
+    font-weight: 600;              /* Same font weight as admin button */
+    color: white;                  /* Ensure text is white */
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: #e74c3c;
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 10;                   /* Ensure it's above other content */
+}
+
+/* Logout Button Hover Effect */
+.logout-btn:hover {
+    background-color: #7122b2;
+    transform: scale(1.05);
+}
+
+.logo {
+    width: 100px; /* Adjust to desired size */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Custom search bar styles */
+.search-container {
+    width: 100%;  /* Make the container take up full width of the page */
+    max-width: 900px;  /* Set max-width to prevent it from becoming too large */
+    margin: 0 auto;  /* Center the container horizontally */
+    padding: 0;  /* Remove any padding */
+    background: none;  /* Remove any background color */
+    border: none;  /* Remove any border */
+}
+
+#searchInput {
+    width: 100%;  /* Ensure input takes the full width of the container */
+    padding: 10px;  /* Add padding for a better appearance */
+    border: 1px solid #ccc;  /* Light border for visibility */
+    outline: none;  /* Remove default outline */
+}
+
+#searchInput:focus {
+    border-color: #007bff;  /* Change border color on focus */
+    outline: none;  /* Remove default outline */
+    box-shadow: none;  /* Remove the blue glow effect on focus */
+}
+
+/* Set the background gradient to cover the entire screen */
+body {
+    background: linear-gradient(to bottom, #a71010, #6e0000);
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: 'Arial', sans-serif;
+    color: #ecf0f1;
     display: flex;
-    gap: 1rem;
-}
-
-.flex-1 {
-    flex: 1;
-}
-
-.flex.items-center {
-    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align everything at the top */
     align-items: center;
+    min-height: 100vh;
+    margin-top: 85px;      /* Adds space below the header */
 }
 
-.flex.justify-between {
-    justify-content: space-between;
+/* Style for the inventory container */
+.container {
+    background-color: #290e72;
+    padding: 35px;              /* Slightly increased padding */
+    border-radius: 12px;
+    width: 1200px;              /* Slightly increased width */
+    max-width: 1200px;          /* Ensure it doesn't exceed this width */
+    min-width: 1200px;          /* Prevent it from shrinking */
+    margin: 20px auto 0;        /* Move the container up */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    max-height: 70vh;
 }
 
-/* Form Inputs and Selects */
-input[type="text"], input[type="number"], select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    width: 100%;
-}
-
-input[type="text"]:focus, input[type="number"]:focus, select:focus {
-    outline: none;
-    border-color: #2563EB;
-}
-
-/* Pagination Styling */
-#pagination {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-}
-
-#pagination button {
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-}
-
-#pagination button.bg-blue-600 {
-    background-color: #2563EB;
+/* Style for the inventory header */
+.inventory-header {
     color: white;
+    font-size: 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-weight: 600;
+    position: absolute;   /* Position it at the top-left corner */
+    top: 0;               /* Position it at the top of the page */
+    left: 100px;              /* Position it at the left side of the page */
+    padding: 10px;        /* Optional: space around the header */
+    z-index: 10;          /* Optional: ensures it's above other content */
 }
 
-#pagination button:hover {
-    cursor: pointer;
+/* Card layout for individual inventory items */
+#inventoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start; /* Align items at the top */
+    align-items: center; /* Ensures all cards stay centered */
+    flex-wrap: nowrap; /* Prevents wrapping */
 }
 
-#pagination button:focus {
-    outline: none;
+/* Card layout for individual inventory items */
+.inventory-item {
+    background-color: #ecf0f1;
+    color: #000000;
+    border-radius: 8px;
+    padding: 25px;              /* Slightly increased padding */
+    width: 100%;                /* Set to 100% to fill the container */
+    max-width: 1150px;          /* Increased max-width just a bit */
+    height: 120px;              /* Increased height for bigger cards but not too much */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;             /* Prevent shrinking */
+    flex-grow: 0;               /* Prevent stretching */
 }
 
-/* General Form & Text Styling */
-.text-sm {
-    font-size: 0.875rem;
+/* When hovering over the card */
+.inventory-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+    background-color: #dfe6e9; /* Slightly lighter background on hover */
+}
+/* Uniform text style for all elements inside the inventory-item */
+.inventory-item h5 {
+    font-size: 16px; /* Uniform font size for game name */
+    font-weight: bold; /* Make the game name bold */
+    margin: 5px 0;
 }
 
-.font-medium {
+
+/* To align the content horizontally across the card */
+.inventory-item .item-details {
+    display: flex;
+    justify-content: space-between; /* Space out items horizontally */
+    gap: 20px; /* Adds spacing between the items */
+    flex-wrap: wrap; /* Allows wrapping if there's not enough space */
+    align-items: center;
+    flex: 1; /* Makes the item details section take up remaining space */
+}
+
+/* Ensure all divs inside the item-details have the same height */
+.inventory-item .item-details div {
+    flex: 1; /* Make each div inside the row stretch equally */
+    min-width: 120px; /* Ensures each div has a minimum width */
+    text-align: center; /* Center text within each div */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center content vertically */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; /* Prevent text from overflowing */
+}
+
+/* Adjust font size for consistency across all content */
+.inventory-item .item-details div {
+    font-size: 14px; /* Same font size for consistency */
+}
+
+/* Modal Styles */
+.modal-content {
+    background-color: #290e72;
+    color: white;
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header, .modal-body, .modal-footer {
+    background-color: #290e72;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+/* Form Styles */
+form .form-label {
+    font-size: 14px;
+    color: white;
     font-weight: 500;
 }
 
-.font-semibold {
-    font-weight: 600;
+/* Adjust the position of the labels to align more to the left */
+.label-column {
+    text-align: left;
+    padding-right: 1px; /* Reduce right padding if needed */
+
 }
 
-.font-mono {
-    font-family: 'Courier New', monospace;
+form .form-control, form .form-select {
+    background-color: #ecf0f1;
+    color: #000000;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.mb-1 {
-    margin-bottom: 0.25rem;
+/* Hover and Focus Effects on Form Inputs */
+form .form-control:hover, form .form-select:hover {
+    border-color: #3498db;
+    background-color: #ecf0f1;
 }
 
-.mb-4 {
-    margin-bottom: 1rem;
+form .form-control:focus, form .form-select:focus {
+    border-color: #3498db;
+    background-color: #f5f7fa;
+    outline: none;
 }
 
-.mt-6 {
-    margin-top: 1.5rem;
+/* Add this to your inventory.css */
+.btn-custom-sm {
+    padding: 0.25rem 0.5rem; /* Smaller padding */
+    font-size: 0.75rem; /* Smaller font size */
+    line-height: 1.25; /* Adjust line height if needed */
 }
 
-.space-y-4 {
-    margin-top: 1rem;
+button.btn-primary:hover, button.btn-warning:hover, button.btn-danger:hover, button.btn-success:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
 }
 
-.text-gray-500 {
-    color: #6B7280; /* Soft gray */
+/* Close button in modals */
+button.btn-close {
+    background-color: transparent;
+    border: none;
+    color: white;
 }
 
-.text-gray-600 {
-    color: #4B5563; /* Slightly darker gray */
+/* Base style for filter buttons */
+.filter-btn {
+    background-color: #e48731; /* Reddish-orange */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin: 5px;
 }
 
-.text-gray-400 {
-    color: #9CA3AF; /* Lighter gray */
+/* Hover effect */
+.filter-btn:hover {
+    background-color: #7122b2;
+    transform: scale(1.05);
+}
+
+/* Reset button with a slightly different shade */
+.reset-btn {
+    background-color: #e21212; /* Deeper red */
+}
+
+.reset-btn:hover {
+    background-color: rgb(153, 38, 38);
+    transform: scale(1.05);
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ecf0f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #4a23b8;
+    border-radius: 10px;
 }

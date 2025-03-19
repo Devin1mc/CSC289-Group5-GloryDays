@@ -96,5 +96,5 @@ def inventory_page():
 
 @auth_bp.route("/logout")
 def logout():
-    session.pop("user", None)
+    session.clear()  # Clears the entire session
     return redirect(url_for("auth.login_page"))

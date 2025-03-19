@@ -30,7 +30,7 @@ def sell_item():
         conn.close()
         return jsonify({"error": "Item not found"}), 404
 
-    current_stock = item['stock']
+    current_stock = item[0]  # Fetch stock directly as it's returned in tuple
     if current_stock < quantity:
         conn.close()
         return jsonify({"error": "Insufficient stock"}), 400
@@ -80,7 +80,7 @@ def admin_page():
     # Check if the user is logged in and has an admin role
     if 'user' not in session or session.get('role') != 'admin':
         flash("You don't have permission to view this page.", 'danger')
-        return redirect(url_for('auth_bp.login'))  # Redirect to the login page if not logged in or not an admin
+        return redirect(url_for('auth.login_page'))  # Correct Blueprint route
 
     # Fetch the list of users and their roles from the database
     user_conn = get_user_connection()
@@ -91,7 +91,6 @@ def admin_page():
 
     # Pass the list of users to the admin template
     return render_template('admin.html', users=users)
-
 
 @app.route('/remove_user/<int:user_id>', methods=['POST'])
 def delete_user_route(user_id):
@@ -123,7 +122,6 @@ def delete_user_route(user_id):
 
     return redirect(url_for('admin_page'))  # Redirect back to the admin page
 
-# Route to handle sorting of inventory data based on user-selected criteria
 @app.route('/inventory_data/sort', methods=['GET'])
 def inventory_sort():
     # Get sorting parameters from request
@@ -146,6 +144,75 @@ def inventory_sort():
     items_list = [dict(item) for item in items]
     return jsonify(items_list)
 
+@app.route('/add_inventory', methods=['POST'])
+def add_inventory():
+    data = request.get_json()
+    sku = data.get('sku')
+    name = data.get('name')
+    platform = data.get('platform')
+    original_packaging = data.get('original_packaging', False)
+    quality = data.get('quality')
+    stock = int(data.get('stock', 0))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Check if the item already exists
+    cursor.execute("SELECT * FROM inventory WHERE sku = ?", (sku,))
+    existing_item = cursor.fetchone()
+    if existing_item:
+        conn.close()
+        return jsonify({"error": "Item already exists"}), 400
+
+    # Insert the new item into the inventory
+    cursor.execute("""
+        INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (sku, name, platform, original_packaging, quality, stock))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item added successfully"})
+
+@app.route('/delete_inventory', methods=['POST'])
+def delete_inventory():
+    data = request.get_json()
+    sku = data.get('sku')
+
+    conn = sqlite3.connect('inventory.db')
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM inventory WHERE sku = ?", (sku,))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item successfully deleted!"})
+
+@app.route('/update_inventory', methods=['POST'])
+def update_inventory():
+    data = request.get_json()
+    sku = data.get('sku')
+    name = data.get('name')
+    platform = data.get('platform')
+    original_packaging = data.get('original_packaging', False)
+    quality = data.get('quality')
+    stock = int(data.get('stock', 0))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Update the inventory item
+    cursor.execute("""
+        UPDATE inventory
+        SET name = ?, platform = ?, original_packaging = ?, quality = ?, stock = ?
+        WHERE sku = ?
+    """, (name, platform, original_packaging, quality, stock, sku))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item updated successfully"})
 
 if __name__ == "__main__":
     app.run(debug=True)
