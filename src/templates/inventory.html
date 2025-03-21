@@ -394,10 +394,10 @@
         function generateNewSku() {
             // Fetch the latest SKU prefix (first 3 digits)
             $.ajax({
-                url: '/get_latest_sku',  // The API endpoint you just created
+                url: '/get_latest_sku',
                 method: 'GET',
                 success: function(response) {
-                    let latestSkuPrefix = response.latest_sku_prefix; // Get the first 3 digits from the latest SKU
+                    let latestSkuPrefix = response.latest_sku_prefix;
                     
                     // Get the numeric part and increment it by 1
                     let skuNumber = parseInt(latestSkuPrefix) + 1;
@@ -449,6 +449,25 @@
         $('#addItemModal').on('show.bs.modal', function() {
             generateNewSku(); // Generate and populate SKU when the modal is shown
         });
+
+        $(document).on('click', '.edit-btn', function() {
+            // Get the data attributes from the clicked edit button
+            let sku = $(this).data('sku');
+            let name = $(this).data('name');
+            let platform = $(this).data('platform');
+            let originalPackaging = $(this).data('packaging');
+            let quality = $(this).data('quality');
+            let stock = $(this).data('stock');
+
+            // Populate the modal with the item details
+            $('#edit_sku').val(sku);
+            $('#edit_name').val(name);
+            $('#edit_platform').val(platform);
+            $('#edit_original_packaging').prop('checked', originalPackaging);
+            $('#edit_quality').val(quality);
+            $('#edit_stock').val(stock);
+        });
+
 
 
     </script>
