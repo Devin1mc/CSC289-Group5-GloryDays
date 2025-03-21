@@ -63,7 +63,7 @@
                     <form id="addItemForm">
                         <div class="mb-3">
                             <label for="sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control" id="sku" required>
+                            <input type="text" class="form-control" id="sku" required readonly>
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
@@ -71,7 +71,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="platform" class="form-label">Platform</label>
-                            <input type="text" class="form-control" id="platform" required>
+                            <select class="form-select" id="platform" required>
+                                <option value="Playstation">Playstation</option>
+                                <option value="Xbox">Xbox</option>
+                                <option value="PC">PC</option>
+                                <option value="Switch">Switch</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="original_packaging" class="form-label">Original Packaging</label>
@@ -79,7 +85,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="quality" class="form-label">Quality</label>
-                            <select class="form-select" id="quality">
+                            <select class="form-select" id="quality" required>
                                 <option value="Good">Good</option>
                                 <option value="Like New">Like New</option>
                                 <option value="Old">Old</option>
@@ -95,6 +101,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Edit Item Modal -->
     <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
@@ -405,11 +412,10 @@
                     // Ensure the new SKU has 3 digits (e.g., 001, 002, etc.)
                     let newSkuPrefix = skuNumber.toString().padStart(3, '0');
                     
-                    // Get platform, original packaging, and quality info from the form
+                    // Get the selected platform and map it to the corresponding letter
                     let platform = $('#platform').val().toLowerCase();
                     let platformCode = '';
 
-                    // Map the platform to the correct letter (p, x, c, s, o)
                     switch (platform) {
                         case 'playstation':
                             platformCode = 'p';
@@ -427,14 +433,29 @@
                             platformCode = 'o'; // Default to 'o' for "Other"
                     }
 
-                    // Check if the checkbox for original packaging is checked ('y' for Yes, 'n' for No)
-                    let originalPackaging = $('#original_packaging').prop('checked') ? 'y' : 'n';
+                    // Check if the checkbox for original packaging is checked ('1' for Yes, '0' for No)
+                    let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';
                     
-                    // Get the first letter of the quality (g for Good, l for Like New, b for Bad)
-                    let quality = $('#quality').val().toLowerCase().charAt(0);
+                    // Get the selected quality (either 'Good', 'Like New', or 'Old')
+                    let quality = $('#quality').val().toLowerCase();
+                    let qualityCode = '';
+
+                    switch (quality) {
+                        case 'good':
+                            qualityCode = 'g';
+                            break;
+                        case 'like new':
+                            qualityCode = 'l';
+                            break;
+                        case 'old':
+                            qualityCode = 'o';
+                            break;
+                        default:
+                            qualityCode = 'g'; // This line is redundant now because we already restricted options in the dropdown
+                    }
 
                     // Generate the new SKU
-                    let newSku = newSkuPrefix + platformCode + originalPackaging + quality;
+                    let newSku = newSkuPrefix + platformCode + originalPackaging + qualityCode;
                     
                     // Set the new SKU in the form
                     $('#sku').val(newSku);
@@ -449,6 +470,7 @@
         $('#addItemModal').on('show.bs.modal', function() {
             generateNewSku(); // Generate and populate SKU when the modal is shown
         });
+
 
         $(document).on('click', '.edit-btn', function() {
             // Get the data attributes from the clicked edit button
