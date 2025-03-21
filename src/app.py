@@ -298,5 +298,27 @@ def api_total_revenue():
     conn.close()
     return jsonify({"total_revenue": total_revenue})
 
+@app.route('/get_latest_sku', methods=['GET'])
+def get_latest_sku():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Fetch the first 3 digits of the latest SKU
+    cursor.execute('''
+        SELECT sku FROM inventory
+        ORDER BY CAST(SUBSTR(sku, 1, 3) AS INTEGER) DESC
+        LIMIT 1
+    ''')
+    
+    latest_sku_row = cursor.fetchone()
+    conn.close()
+    
+    if latest_sku_row:
+        # Return only the first 3 digits of the SKU
+        return jsonify({"latest_sku_prefix": latest_sku_row['sku'][:3]})
+    else:
+        # If no products are in the inventory, return '000'
+        return jsonify({"latest_sku_prefix": '000'})
+
 if __name__ == "__main__":
     app.run(debug=True)

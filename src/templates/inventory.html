@@ -390,6 +390,67 @@
             })
             .catch(error => console.error("Error logging out:", error));
         }
+        // Function to generate a new SKU
+        function generateNewSku() {
+            // Fetch the latest SKU prefix (first 3 digits)
+            $.ajax({
+                url: '/get_latest_sku',  // The API endpoint you just created
+                method: 'GET',
+                success: function(response) {
+                    let latestSkuPrefix = response.latest_sku_prefix; // Get the first 3 digits from the latest SKU
+                    
+                    // Get the numeric part and increment it by 1
+                    let skuNumber = parseInt(latestSkuPrefix) + 1;
+                    
+                    // Ensure the new SKU has 3 digits (e.g., 001, 002, etc.)
+                    let newSkuPrefix = skuNumber.toString().padStart(3, '0');
+                    
+                    // Get platform, original packaging, and quality info from the form
+                    let platform = $('#platform').val().toLowerCase();
+                    let platformCode = '';
+
+                    // Map the platform to the correct letter (p, x, c, s, o)
+                    switch (platform) {
+                        case 'playstation':
+                            platformCode = 'p';
+                            break;
+                        case 'xbox':
+                            platformCode = 'x';
+                            break;
+                        case 'pc':
+                            platformCode = 'c';
+                            break;
+                        case 'switch':
+                            platformCode = 's';
+                            break;
+                        default:
+                            platformCode = 'o'; // Default to 'o' for "Other"
+                    }
+
+                    // Check if the checkbox for original packaging is checked ('y' for Yes, 'n' for No)
+                    let originalPackaging = $('#original_packaging').prop('checked') ? 'y' : 'n';
+                    
+                    // Get the first letter of the quality (g for Good, l for Like New, b for Bad)
+                    let quality = $('#quality').val().toLowerCase().charAt(0);
+
+                    // Generate the new SKU
+                    let newSku = newSkuPrefix + platformCode + originalPackaging + quality;
+                    
+                    // Set the new SKU in the form
+                    $('#sku').val(newSku);
+                },
+                error: function(error) {
+                    alert('Error fetching latest SKU: ' + error.responseText);
+                }
+            });
+        }
+
+        // Call this function when the "Add Item" modal is shown
+        $('#addItemModal').on('show.bs.modal', function() {
+            generateNewSku(); // Generate and populate SKU when the modal is shown
+        });
+
+
     </script>
 </body>
 </html>
