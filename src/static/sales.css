@@ -1,0 +1,238 @@
+/* sales.css */
+
+/* 1. Ensure the gradient covers the entire screen */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, #a71010, #6e0000);
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #ecf0f1;
+  }
+  
+  /* 2. Main container */
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  /* 3. Header (Recent Sales) */
+  .sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .sales-logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+  }
+  
+  .sales-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+  }
+  
+  /* 4. Back to Inventory button */
+  .back-to-inventory {
+    padding: 10px 20px;
+    background-color: #e48731;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-to-inventory:hover {
+    background-color: #7122b2;
+  }
+  
+  /* 5. Total Revenue Section */
+  .total-revenue-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .total-revenue-container {
+    background-color: #290e72;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 200px;
+    text-align: center;
+  }
+  
+  .total-revenue-container h2 {
+    color: yellow;
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  
+  .total-revenue-container p {
+    color: yellow;
+    font-size: 1rem;
+    margin: 5px 0 0;
+  }
+  
+  /* 6. Search Section */
+  .search-section {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: black;
+  }
+  
+  .search-button {
+    padding: 10px 20px;
+    background-color: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-button:hover {
+    background-color: #1e4a9e;
+  }
+  
+  .search-icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 8px;
+  }
+  
+  /* 7. Sales Table Section */
+  .sales-table-section {
+    overflow-x: auto;
+  }
+  
+  .sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .sales-table th,
+  .sales-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .sales-table th {
+    background-color: #3498db;
+    color: #fff;
+  }
+  
+  .sales-row:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* 8. Previous Month Sales Section */
+  
+  /* Container for the entire previous month block */
+  .prev-month-section {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  
+  /* Summary bar: white background, black text */
+  .prev-month-summary {
+    background-color: #b6cde7;       /* White background */
+    color: #000;                  /* Black text */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  /* Title inside the summary bar */
+  .prev-month-summary h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #000;
+  }
+  
+  /* Green total below "Previous Month Sales" */
+  #prevMonthTotalRevenue {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #047857;  /* Green shade */
+    margin-top: 5px;
+  }
+  
+  /* Arrow on the right side: black, rotates on expand */
+  .toggle-arrow {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease;
+    color: #000;     /* Black arrow */
+  }
+  
+  .rotate {
+    transform: rotate(180deg);
+  }
+  
+  /* Collapsible details area */
+  .prev-month-details {
+    margin-top: 10px;
+  }
+  
+  .prev-month-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .prev-month-table th,
+  .prev-month-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .prev-month-table th {
+    background-color: #3498db;
+    color: #fff;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  

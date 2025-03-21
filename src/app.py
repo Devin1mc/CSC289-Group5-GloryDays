@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template, session, redirect, u
 from login import auth_bp, setup_database, get_user_connection
 import sqlite3
 from db_setup import get_db_connection, init_db
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Replace with a secure key
@@ -48,21 +49,85 @@ def sell_item():
 def sales_page():
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Get current month in YYYY-MM format
+    current_month = datetime.now().strftime('%Y-%m')
+    
+    # Calculate total revenue for the current month
+    cursor.execute("""
+        SELECT SUM(quantity * sale_price) as total_revenue 
+        FROM sales 
+        WHERE strftime('%Y-%m', sale_date) = ?
+    """, (current_month,))
+    result = cursor.fetchone()
+    total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
+
+    # Updated sales records query to ensure all sales are displayed, even if they are not in inventory
     cursor.execute("""
         SELECT 
-            sales.sku, 
-            date(sales.sale_date) as sale_date,
-            inventory.quality as condition,
-            SUM(sales.quantity) as total_quantity,
-            AVG(sales.sale_price) as avg_sale_price
+            sales.sku,
+            CASE 
+                WHEN inventory.name IS NULL THEN 'Unlisted Item'
+                ELSE inventory.name 
+            END AS item_name, 
+            sales.sale_date AS sale_date, 
+            CASE 
+                WHEN inventory.quality IS NULL THEN 'Unknown' 
+                ELSE inventory.quality 
+            END AS condition,
+            SUM(sales.quantity) AS total_quantity,
+            SUM(sales.quantity * sales.sale_price) AS total_sales_value
         FROM sales
-        JOIN inventory ON sales.sku = inventory.sku
-        GROUP BY sales.sku, date(sales.sale_date), inventory.quality
+        LEFT JOIN inventory ON sales.sku = inventory.sku
+        WHERE strftime('%Y-%m', sales.sale_date) = ?
+        GROUP BY sales.sku, sales.sale_date, inventory.quality
         ORDER BY sale_date DESC
-    """)
+    """, (current_month,))
     sales = cursor.fetchall()
     conn.close()
-    return render_template("sales.html", sales=sales)
+    
+    # Pass total_revenue and sales records to the template
+    return render_template("sales.html", sales=sales, total_revenue=total_revenue)
+
+# Endpoint to return previous month sales data
+@app.route('/api/previous_month_sales')
+def api_previous_month_sales():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Calculate the previous month in YYYY-MM format
+    first_day_this_month = datetime.today().replace(day=1)
+    last_month = first_day_this_month - timedelta(days=1)
+    prev_month_str = last_month.strftime('%Y-%m')
+
+    # Calculate total revenue for previous month
+    cursor.execute("""
+        SELECT SUM(quantity * sale_price) as total_revenue 
+        FROM sales 
+        WHERE strftime('%Y-%m', sale_date) = ?
+    """, (prev_month_str,))
+    result = cursor.fetchone()
+    total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
+
+    # Get detailed previous month sales grouped by SKU, date, and quality
+    cursor.execute("""
+        SELECT 
+            sales.sku,
+            inventory.name AS item_name,
+            DATE(sales.sale_date) AS sale_date,
+            inventory.quality AS condition,
+            SUM(sales.quantity) AS total_quantity,
+            SUM(sales.quantity * sales.sale_price) AS total_sales_value
+        FROM sales
+        JOIN inventory ON sales.sku = inventory.sku
+        WHERE strftime('%Y-%m', sales.sale_date) = ?
+        GROUP BY sales.sku, DATE(sales.sale_date), inventory.quality
+        ORDER BY sale_date DESC
+    """, (prev_month_str,))
+    sales_details = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+    return jsonify({"total_revenue": total_revenue, "sales_details": sales_details})
 
 @app.route('/inventory_data')
 def inventory_data():
@@ -213,6 +278,25 @@ def update_inventory():
     conn.close()
 
     return jsonify({"message": "Item updated successfully"})
+
+@app.route('/api/total_revenue')
+def api_total_revenue():
+    """
+    This endpoint returns the total revenue for the current month in JSON format.
+    It is intended to be polled by the front-end to automatically update the revenue display.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    current_month = datetime.now().strftime('%Y-%m')
+    cursor.execute("""
+        SELECT SUM(quantity * sale_price) as total_revenue 
+        FROM sales 
+        WHERE strftime('%Y-%m', sale_date) = ?
+    """, (current_month,))
+    result = cursor.fetchone()
+    total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
+    conn.close()
+    return jsonify({"total_revenue": total_revenue})
 
 if __name__ == "__main__":
     app.run(debug=True)
