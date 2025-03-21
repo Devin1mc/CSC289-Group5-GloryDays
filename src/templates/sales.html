@@ -4,52 +4,188 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recent Sales</title>
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS (for layout utilities, if needed) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <!-- Custom Sales Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='sales.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <!-- This is for the label font -->
 </head>
-<body class="bg-gray-50">
-  <div class="max-w-4xl mx-auto p-4">
-    <!-- Header with Logo -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-4">
-        <img src="/Static\Images/Glory%20Days%20Logo%20Circle%20(Transparent).jpg" alt="Glory Days Logo" class="w-14 h-14 object-contain rounded-md">
-        <h1 class="text-2xl font-bold text-blue-700">Recent Sales</h1>
+<body>
+  <div class="container">
+    <!-- Header with Logo and Title -->
+    <header class="sales-header">
+      <div class="logo-title">
+        <img src="/static/images/GloryDaysLogoCircle.JPG" alt="Glory Days Logo" class="sales-logo">
+        <h1 class="sales-title">Recent Sales</h1>
       </div>
-      <a href="/inventory" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-        Back to Inventory
-      </a>
-    </div>
+      <a href="/inventory" class="back-to-inventory">Back to Inventory</a>
+    </header>
 
-    <!-- Sales Table -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
-        <thead class="bg-blue-600 text-white">
+    <!-- Total Revenue Section -->
+    <section class="total-revenue-section">
+      <div class="total-revenue-container">
+        <h2>Total Revenue</h2>
+        <p id="totalRevenue">${{ '%.2f'|format(total_revenue) }}</p>
+      </div>
+    </section>
+
+    <!-- Search Bar Section -->
+    <section class="search-section">
+      <input type="text" id="searchBar" placeholder="Search by SKU or Game Title..." class="search-input">
+      <button id="searchButton" class="search-button">
+        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+        </svg>
+        Search
+      </button>
+    </section>
+
+    <!-- Sales Table Section -->
+    <section class="sales-table-section">
+      <table class="sales-table">
+        <thead>
           <tr>
-            <th class="py-3 px-4 text-left">Item Code</th>
-            <th class="py-3 px-4 text-left">Condition</th>
-            <th class="py-3 px-4 text-right">Quantity</th>
-            <th class="py-3 px-4 text-right">Sale Price</th>
-            <th class="py-3 px-4 text-right">Sale Date</th>
+            <th>Item Code</th>
+            <th>Game Title</th>
+            <th>Condition</th>
+            <th>Quantity</th>
+            <th>Total Sales Value</th>
+            <th>Sale Date</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
           {% for sale in sales %}
-          <tr class="hover:bg-gray-50">
-            <td class="py-2 px-4">{{ sale.sku }}</td>
-            <td class="py-2 px-4">{{ sale.condition }}</td>
-            <td class="py-2 px-4 text-right">{{ sale.total_quantity }}</td>
-            <td class="py-2 px-4 text-right">${{ '%.2f'|format(sale.avg_sale_price) }}</td>
-            <td class="py-2 px-4 text-right">{{ sale.sale_date }}</td>
+          <tr class="sales-row">
+            <td>{{ sale.sku }}</td>
+            <td>{{ sale.item_name }}</td>
+            <td>{{ sale.condition }}</td>
+            <td>{{ sale.total_quantity }}</td>
+            <td>${{ '%.2f'|format(sale.total_sales_value) }}</td>
+            <td>{{ sale.sale_date }}</td>
           </tr>
           {% endfor %}
           {% if sales|length == 0 %}
-          <tr>
-            <td class="py-2 px-4" colspan="5">No sales recorded.</td>
+          <tr id="noResultRow">
+            <td colspan="6">No sales recorded.</td>
           </tr>
           {% endif %}
         </tbody>
       </table>
+    </section>
+  </div>
+
+  <!-- Previous Month Sales Summary & Details -->
+  <div class="prev-month-section">
+    <div id="prevMonthSummary" class="prev-month-summary">
+      <div class="prev-month-info">
+        <h2>Previous Month Sales</h2>
+        <div id="prevMonthTotalRevenue">$0.00</div>
+      </div>
+      <div class="prev-month-toggle">
+        <svg id="toggleArrow" class="toggle-arrow" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.586l3.71-3.354a.75.75 0 111.02 1.1l-4.25 3.848a.75.75 0 01-1.02 0L5.21 8.33a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    </div>
+    <div id="prevMonthDetails" class="prev-month-details hidden">
+      <table class="prev-month-table">
+        <thead>
+          <tr>
+            <th>Item Code</th>
+            <th>Game Title</th>
+            <th>Condition</th>
+            <th>Quantity</th>
+            <th>Total Sales Value</th>
+            <th>Sale Date</th>
+          </tr>
+        </thead>
+        <tbody id="prevMonthTableBody">
+          <!-- Details will be dynamically inserted here -->
+        </tbody>
+      </table>
     </div>
   </div>
+
+  <!-- Scripts for dynamic functionality -->
+  <script>
+    function updatePrevMonthSales() {
+      fetch('/api/previous_month_sales')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('prevMonthTotalRevenue').textContent = `$${parseFloat(data.total_revenue).toFixed(2)}`;
+          const tbody = document.getElementById('prevMonthTableBody');
+          tbody.innerHTML = '';
+          data.sales_details.forEach(sale => {
+            const row = document.createElement('tr');
+            row.classList.add("sales-row");
+            row.innerHTML = `
+              <td>${sale.sku}</td>
+              <td>${sale.item_name}</td>
+              <td>${sale.condition}</td>
+              <td>${sale.total_quantity}</td>
+              <td>$${parseFloat(sale.total_sales_value).toFixed(2)}</td>
+              <td>${sale.sale_date}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching previous month sales:', error));
+    }
+
+    document.getElementById('prevMonthSummary').addEventListener('click', () => {
+      const details = document.getElementById('prevMonthDetails');
+      const arrow = document.getElementById('toggleArrow');
+      details.classList.toggle('hidden');
+      arrow.classList.toggle('rotate');
+    });
+
+    document.addEventListener("DOMContentLoaded", updatePrevMonthSales);
+
+    function performSearch() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      let visibleCount = 0;
+      rows.forEach(row => {
+        if (row.id === 'noResultRow') return;
+        const sku = row.cells[0].textContent.toLowerCase();
+        const gameName = row.cells[1].textContent.toLowerCase();
+        if (sku.includes(query) || gameName.includes(query)) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      let noResultRow = document.getElementById('noResultRow');
+      if (visibleCount === 0) {
+        if (!noResultRow) {
+          noResultRow = document.createElement('tr');
+          noResultRow.id = 'noResultRow';
+          const td = document.createElement('td');
+          td.colSpan = 6;
+          td.textContent = "No results found.";
+          noResultRow.appendChild(td);
+          document.querySelector('table tbody').appendChild(noResultRow);
+        }
+      } else if (noResultRow) {
+        noResultRow.remove();
+      }
+    }
+
+    document.getElementById('searchBar').addEventListener('input', performSearch);
+    document.getElementById('searchButton').addEventListener('click', performSearch);
+
+    function updateTotalRevenue() {
+      fetch('/api/total_revenue')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalRevenue').textContent = `$${parseFloat(data.total_revenue).toFixed(2)}`;
+        })
+        .catch(error => console.error('Error fetching total revenue:', error));
+    }
+
+    document.addEventListener("DOMContentLoaded", updateTotalRevenue);
+    setInterval(updateTotalRevenue, 5000);
+  </script>
 </body>
 </html>
