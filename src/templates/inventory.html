@@ -62,10 +62,6 @@
                 <div class="modal-body">
                     <form id="addItemForm">
                         <div class="mb-3">
-                            <label for="sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control" id="sku" required readonly>
-                        </div>
-                        <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" required>
                         </div>
@@ -113,10 +109,6 @@
                 </div>
                 <div class="modal-body">
                     <form id="editItemForm">
-                        <div class="mb-3">
-                            <label for="edit_sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control" id="edit_sku" disabled>
-                        </div>
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="edit_name" required>
@@ -413,45 +405,43 @@
                     let newSkuPrefix = skuNumber.toString().padStart(3, '0');
                     
                     // Get the selected platform and map it to the corresponding letter
-                    let platform = $('#platform').val().toLowerCase();
+                    let platform = $('#platform').val().toUpperCase();
                     let platformCode = '';
 
                     switch (platform) {
                         case 'playstation':
-                            platformCode = 'p';
+                            platformCode = 'P';
                             break;
                         case 'xbox':
-                            platformCode = 'x';
+                            platformCode = 'X';
                             break;
                         case 'pc':
-                            platformCode = 'c';
+                            platformCode = 'C';
                             break;
                         case 'switch':
-                            platformCode = 's';
+                            platformCode = 'S';
                             break;
                         default:
-                            platformCode = 'o'; // Default to 'o' for "Other"
+                            platformCode = 'O'; // Default to 'o' for "Other"
                     }
 
                     // Check if the checkbox for original packaging is checked ('1' for Yes, '0' for No)
                     let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';
                     
                     // Get the selected quality (either 'Good', 'Like New', or 'Old')
-                    let quality = $('#quality').val().toLowerCase();
+                    let quality = $('#quality').val().toUpperCase();
                     let qualityCode = '';
 
                     switch (quality) {
                         case 'good':
-                            qualityCode = 'g';
+                            qualityCode = 'G';
                             break;
                         case 'like new':
-                            qualityCode = 'l';
+                            qualityCode = 'L';
                             break;
                         case 'old':
-                            qualityCode = 'o';
+                            qualityCode = 'O';
                             break;
-                        default:
-                            qualityCode = 'g'; // This line is redundant now because we already restricted options in the dropdown
                     }
 
                     // Generate the new SKU
