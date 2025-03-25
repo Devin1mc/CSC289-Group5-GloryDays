@@ -299,7 +299,7 @@ button.btn-primary:hover, button.btn-warning:hover, button.btn-danger:hover, but
 
 /* Close button in modals */
 button.btn-close {
-    background-color: transparent;
+    background-color: white;
     border: none;
     color: white;
 }
