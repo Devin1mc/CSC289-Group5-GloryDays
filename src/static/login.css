@@ -7,11 +7,7 @@ h2 {
     transform: translateX(-50%); /* Centers the text horizontally */
     z-index: 1; /* Ensures the text is in front of the image */
     /* Outline effect using text-shadow */
-    text-shadow: 
-        -2px -2px 0 #000,  
-         2px -2px 0 #000,
-        -2px  2px 0 #000,
-         2px  2px 0 #000;
+    text-shadow: 2px 2px 4px #000;
 }
 
 h3{
@@ -24,11 +20,11 @@ h3{
     transform: translateX(-50%); /* Centers the text horizontally */
     z-index: 1; /* Ensures the text is in front of the image */
     /* Outline effect using text-shadow */
-    text-shadow: 
-        -2px -2px 0 #000,  
-         2px -2px 0 #000,
-        -2px  2px 0 #000,
-         2px  2px 0 #000;
+    text-shadow: 2px 2px 4px #000;
+}
+
+h4{
+    color: #ffffff;
 }
 
 body {
