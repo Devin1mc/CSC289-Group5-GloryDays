@@ -91,6 +91,10 @@
                             <label for="stock" class="form-label">Stock</label>
                             <input type="number" class="form-control" id="stock" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" required>
+                        </div>
                         <button type="submit" class="btn btn-primary">Add Item</button>
                     </form>
                 </div>
@@ -99,7 +103,7 @@
     </div>
 
 
-    <!-- Edit Item Modal -->
+        <!-- Edit Item Modal -->
     <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -115,7 +119,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="edit_platform" class="form-label">Platform</label>
-                            <input type="text" class="form-control" id="edit_platform" required>
+                            <select class="form-select" id="edit_platform" required>
+                                <option value="Playstation">Playstation</option>
+                                <option value="Xbox">Xbox</option>
+                                <option value="PC">PC</option>
+                                <option value="Switch">Switch</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="edit_original_packaging" class="form-label">Original Packaging</label>
@@ -123,7 +133,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="edit_quality" class="form-label">Quality</label>
-                            <select class="form-select" id="edit_quality">
+                            <select class="form-select" id="edit_quality" required>
                                 <option value="Good">Good</option>
                                 <option value="Like New">Like New</option>
                                 <option value="Old">Old</option>
@@ -133,12 +143,17 @@
                             <label for="edit_stock" class="form-label">Stock</label>
                             <input type="number" class="form-control" id="edit_stock" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="edit_price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="edit_price" required step="0.01">
+                        </div>
                         <button type="submit" class="btn btn-primary">Update Item</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Sell Item Modal -->
     <div class="modal fade" id="sellItemModal" tabindex="-1" aria-labelledby="sellItemModalLabel" aria-hidden="true">
@@ -180,7 +195,8 @@
                 platform: $('#platform').val(),
                 original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,
                 quality: $('#quality').val(),
-                stock: $('#stock').val()
+                stock: $('#stock').val(),
+                price: $('#price').val()
             };
 
             $.ajax({
@@ -208,7 +224,8 @@
                 platform: $('#edit_platform').val(),
                 original_packaging: $('#edit_original_packaging').prop('checked') ? 1 : 0,
                 quality: $('#edit_quality').val(),
-                stock: $('#edit_stock').val()
+                stock: $('#edit_stock').val(),
+                price: $('#price').val()
             };
 
             $.ajax({

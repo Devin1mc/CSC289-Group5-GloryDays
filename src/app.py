@@ -218,6 +218,7 @@ def add_inventory():
     original_packaging = data.get('original_packaging', False)
     quality = data.get('quality')
     stock = int(data.get('stock', 0))
+    price = float(data.get('price', 0))
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -231,9 +232,9 @@ def add_inventory():
 
     # Insert the new item into the inventory
     cursor.execute("""
-        INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock)
+        INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock, price)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (sku, name, platform, original_packaging, quality, stock))
+    """, (sku, name, platform, original_packaging, quality, stock, price))
 
     conn.commit()
     conn.close()
@@ -263,6 +264,7 @@ def update_inventory():
     original_packaging = data.get('original_packaging', False)
     quality = data.get('quality')
     stock = int(data.get('stock', 0))
+    price = float(data.get('price', 0))
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -270,9 +272,9 @@ def update_inventory():
     # Update the inventory item
     cursor.execute("""
         UPDATE inventory
-        SET name = ?, platform = ?, original_packaging = ?, quality = ?, stock = ?
+        SET name = ?, platform = ?, original_packaging = ?, quality = ?, stock = ?, price = ?
         WHERE sku = ?
-    """, (name, platform, original_packaging, quality, stock, sku))
+    """, (name, platform, original_packaging, quality, stock, price, sku))
 
     conn.commit()
     conn.close()
