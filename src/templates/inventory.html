@@ -197,6 +197,7 @@
         // Add Item functionality
         $('#addItemForm').on('submit', function(event) {
             event.preventDefault();
+            let priceString = $('#price').val();
             let itemData = {
                 sku: $('#sku').val(),
                 name: $('#name').val(),
@@ -204,7 +205,7 @@
                 original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,
                 quality: $('#quality').val(),
                 stock: $('#stock').val(),
-                price: $('#price').val()
+                price: parseFloat(priceString)
             };
 
             $.ajax({
