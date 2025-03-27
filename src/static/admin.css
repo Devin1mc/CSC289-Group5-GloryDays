@@ -1,8 +1,9 @@
 /* General styles */
 body {
+    min-height: 100vh;
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    background: linear-gradient(to bottom, #a71010, #6e0000); /* Light to dark red gradient */
+    color: #f5f5f5; /* Light text for readability */
     margin: 0;
     padding: 0;
     position: relative;
@@ -12,13 +13,15 @@ body {
 h1 {
     text-align: center;
     margin-top: 20px;
-    color: #2c3e50;
+    color: #ffffff; /* Pure white for maximum contrast */
+    font-family: 'Press Start 2P', cursive;
+    text-shadow: 2px 2px 4px #000;
 }
 
 /* Section Titles */
 h2 {
     text-align: center;
-    color: #34495e;
+    color: #000000; /* Deep red for better contrast with white */
     margin-top: 40px;
     font-size: 24px;
 }
@@ -27,7 +30,9 @@ h2 {
 p {
     text-align: center;
     font-size: 18px;
-    color: #7f8c8d;
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    text-shadow: 2px 2px 4px #000;
 }
 
 /* Links in lists */
@@ -45,26 +50,58 @@ ul li {
 ul li a {
     text-decoration: none;
     font-size: 18px;
-    color: #2980b9;
+    color: #a71010; /* Red for visibility */
     padding: 10px 15px;
     border-radius: 5px;
     display: inline-block;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ul li a:hover {
-    background-color: #3498db;
+    background-color: #990000;
     color: white;
 }
 
 /* Button styling */
 ul li a.bg-green-600 {
-    background-color: #27ae60;
+    background-color: #b30000;
     color: white;
 }
 
 ul li a.bg-green-600:hover {
-    background-color: #2ecc71;
+    background-color: #800000;
+}
+
+/* Inventory Button - Blue */
+.view-inventory {
+    background-color: #0044cc; /* Deep blue */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: inline-block;
+    text-decoration: none;
+    border: 1px solid #003399; /* Slightly darker blue border */
+    transition: background-color 0.3s ease;
+}
+
+.view-inventory:hover {
+    background-color: #002a80; /* Darker blue on hover */
+}
+
+/* Sales Button - Orange-Red */
+.sales {
+    background-color: #0044cc; /* Deep blue */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: inline-block;
+    text-decoration: none;
+    border: 1px solid #003399; /* Slightly darker blue border */
+    transition: background-color 0.3s ease;
+}
+
+.sales:hover {
+    background-color: #002a80; /* Darker blue on hover */
 }
 
 /* Logout button */
@@ -72,18 +109,19 @@ ul li a.bg-green-600:hover {
     position: absolute;
     top: 20px;
     right: 20px;
-    font-size: 18px;
-    color: #e74c3c;
+    font-size: 1.125rem; /* Match font size */
+    font-weight: 600;    /* Match font weight */
+    color: white;        /* White text */
     text-decoration: none;
     padding: 10px 15px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #e74c3c;
+    background-color: #e74c3c;
+    border-radius: 0.5rem;  /* Rounded corners */
+    border: none;          /* Remove border */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .logout-btn:hover {
-    background-color: #e74c3c;
+    background-color: #aa2222;
     color: white;
 }
 
@@ -91,18 +129,18 @@ ul li a.bg-green-600:hover {
 .remove-btn {
     cursor: pointer;
     font-size: 18px;
-    color: #e74c3c;
+    color: white;
     text-decoration: none;
     padding: 10px 15px;
-    background-color: #fff;
+    background-color: #800000;
     border-radius: 5px;
-    border: 1px solid #e74c3c;
+    border: 1px solid #ff9999;
     transition: background-color 0.3s ease, color 0.3s ease;
     display: inline-block;
 }
 
 .remove-btn:hover {
-    background-color: #e74c3c;
+    background-color: #aa2222;
     color: white;
 }
 
@@ -114,37 +152,52 @@ ul li a.bg-green-600:hover {
     padding: 20px;
 }
 
+/* Sidebar Styling with Transparent Gray Effect */
+.sidebar-left, .sidebar-right {
+    width: 48%;
+    padding: 20px;
+    background-color: white; /* Keep white for readability */
+    border-radius: 8px;
+    position: relative; /* Needed for the overlay effect */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Soft grey shadow */
+    color: #000000; /* Dark text for contrast */
+}
+
+/* Adds a semi-transparent gray overlay around the white boxes */
+.sidebar-left::before,
+.sidebar-right::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: rgba(0, 0, 0, 0.15); /* Subtle transparent gray */
+    border-radius: 12px;
+    z-index: -1;
+}
+
 .sidebar-left {
-    width: 33%;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-right: 20px;
+    margin-right: 4%;
 }
 
-.sidebar-right {
-    width: 65%;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
+    background: white; /* Keep white */
+    color: #000000; /* Dark text for better readability */
 }
 
 table th, table td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
 table th {
-    background-color: #f2f2f2;
-    color: #34495e;
+    background-color: #f5f5f5; /* Light gray for subtle contrast */
+    color: #000000;
 }
 
 table tr:nth-child(even) {
@@ -180,7 +233,7 @@ table tr:nth-child(even) {
         padding: 8px 12px;
     }
 
-    a.logout {
+    .logout-btn {
         font-size: 16px;
         top: 10px;
         right: 10px;

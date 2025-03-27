@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>Admin Panel</title>
 </head>
 <body>
@@ -18,12 +19,12 @@
         <div class="sidebar-left">
             <h2>Inventory Management</h2>
             <ul>
-                <li><a href="/inventory">View Inventory</a></li>
+                <li><a href="/inventory" class="view-inventory">View Inventory</a></li>
             </ul>
 
             <h2>Sales Management</h2>
             <ul>
-                <li><a href="/sales" class="bg-green-600">View Sales</a></li>
+                <li><a href="/sales" class="sales">View Sales</a></li>
             </ul>
         </div>
 
