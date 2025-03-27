@@ -226,6 +226,7 @@
         // Edit Item functionality
         $('#editItemForm').on('submit', function(event) {
             event.preventDefault();
+            let priceString = $('#edit_price').val();
             let itemData = {
                 sku: $('#edit_sku').val(),
                 name: $('#edit_name').val(),
@@ -233,7 +234,6 @@
                 original_packaging: $('#edit_original_packaging').prop('checked') ? 1 : 0,
                 quality: $('#edit_quality').val(),
                 stock: $('#edit_stock').val(),
-                priceString: $('#edit_price').val(),
                 price: parseFloat(priceString)
             };
 
