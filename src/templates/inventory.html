@@ -62,6 +62,10 @@
                 <div class="modal-body">
                     <form id="addItemForm">
                         <div class="mb-3">
+                            <label for="sku" class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="sku" readonly>
+                        </div>
+                        <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" required>
                         </div>
@@ -113,6 +117,10 @@
                 </div>
                 <div class="modal-body">
                     <form id="editItemForm">
+                        <div class="mb-3">
+                            <label for="edit_sku" class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="edit_sku" readonly>
+                        </div>
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="edit_name" required>
@@ -408,75 +416,78 @@
         }
         // Function to generate a new SKU
         function generateNewSku() {
-            // Fetch the latest SKU prefix (first 3 digits)
-            $.ajax({
-                url: '/get_latest_sku',
-                method: 'GET',
-                success: function(response) {
-                    let latestSkuPrefix = response.latest_sku_prefix;
-                    
-                    // Get the numeric part and increment it by 1
-                    let skuNumber = parseInt(latestSkuPrefix) + 1;
-                    
-                    // Ensure the new SKU has 3 digits (e.g., 001, 002, etc.)
-                    let newSkuPrefix = skuNumber.toString().padStart(3, '0');
-                    
-                    // Get the selected platform and map it to the corresponding letter
-                    let platform = $('#platform').val().toUpperCase();
-                    let platformCode = '';
+        // Fetch the latest SKU prefix (first 3 digits)
+        $.ajax({
+            url: '/get_latest_sku',
+            method: 'GET',
+            success: function(response) {
+                let latestSkuPrefix = response.latest_sku_prefix;
+                
+                // Get the numeric part and increment it by 1
+                let skuNumber = parseInt(latestSkuPrefix) + 1;
+                
+                // Ensure the new SKU has 3 digits (e.g., 001, 002, etc.)
+                let newSkuPrefix = skuNumber.toString().padStart(3, '0');
+                
+                // Get the selected platform and map it to the corresponding letter
+                let platform = $('#platform').val().toUpperCase();
+                let platformCode = '';
 
-                    switch (platform) {
-                        case 'playstation':
-                            platformCode = 'P';
-                            break;
-                        case 'xbox':
-                            platformCode = 'X';
-                            break;
-                        case 'pc':
-                            platformCode = 'C';
-                            break;
-                        case 'switch':
-                            platformCode = 'S';
-                            break;
-                        default:
-                            platformCode = 'O'; // Default to 'o' for "Other"
-                    }
-
-                    // Check if the checkbox for original packaging is checked ('1' for Yes, '0' for No)
-                    let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';
-                    
-                    // Get the selected quality (either 'Good', 'Like New', or 'Old')
-                    let quality = $('#quality').val().toUpperCase();
-                    let qualityCode = '';
-
-                    switch (quality) {
-                        case 'good':
-                            qualityCode = 'G';
-                            break;
-                        case 'like new':
-                            qualityCode = 'L';
-                            break;
-                        case 'old':
-                            qualityCode = 'O';
-                            break;
-                    }
-
-                    // Generate the new SKU
-                    let newSku = newSkuPrefix + platformCode + originalPackaging + qualityCode;
-                    
-                    // Set the new SKU in the form
-                    $('#sku').val(newSku);
-                },
-                error: function(error) {
-                    alert('Error fetching latest SKU: ' + error.responseText);
+                switch (platform) {
+                    case 'playstation':
+                        platformCode = 'P';
+                        break;
+                    case 'xbox':
+                        platformCode = 'X';
+                        break;
+                    case 'pc':
+                        platformCode = 'C';
+                        break;
+                    case 'switch':
+                        platformCode = 'S';
+                        break;
+                    default:
+                        platformCode = 'O'; // Default to 'O' for "Other"
                 }
-            });
-        }
 
-        // Call this function when the "Add Item" modal is shown
-        $('#addItemModal').on('show.bs.modal', function() {
-            generateNewSku(); // Generate and populate SKU when the modal is shown
+                // Check if the checkbox for original packaging is checked ('1' for Yes, '0' for No)
+                let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';
+                
+                // Get the selected quality (either 'Good', 'Like New', or 'Old')
+                let quality = $('#quality').val().toUpperCase();
+                let qualityCode = '';
+
+                switch (quality) {
+                    case 'good':
+                        qualityCode = 'G';
+                        break;
+                    case 'like new':
+                        qualityCode = 'L';
+                        break;
+                    case 'old':
+                        qualityCode = 'O';
+                        break;
+                }
+
+                // Generate the new SKU
+                let newSku = newSkuPrefix + platformCode + originalPackaging + qualityCode;
+                
+                // Set the new SKU in the form (for add-item modal)
+                $('#sku').val(newSku);
+
+                // If it's the edit-item modal, populate the SKU field too
+                $('#edit_sku').val(newSku);
+            },
+            error: function(error) {
+                alert('Error fetching latest SKU: ' + error.responseText);
+            }
         });
+    }
+
+    // Open modal for add-item and edit-item and generate SKU
+    $('#addItemModal').on('show.bs.modal', function () {
+        generateNewSku(); // Generate and display SKU when add-item modal opens
+    });
 
 
         $(document).on('click', '.edit-btn', function() {
