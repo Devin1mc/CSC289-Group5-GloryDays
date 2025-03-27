@@ -226,6 +226,11 @@
         // Edit Item functionality
         $('#editItemForm').on('submit', function(event) {
             event.preventDefault();
+            // Get the price from the input field
+            let priceString = $('#edit_price').val();
+
+            // Convert the price string to a float
+            let price = parseFloat(priceString);
             let itemData = {
                 sku: $('#edit_sku').val(),
                 name: $('#edit_name').val(),
