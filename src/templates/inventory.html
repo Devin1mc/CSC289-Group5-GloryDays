@@ -62,13 +62,15 @@
                 <div class="modal-body">
                     <form id="addItemForm">
                         <div class="mb-3">
-                            <label for="sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control" id="sku" readonly>
+                            <label for="item_number" class="form-label">Item Number</label>
+                            <input type="text" class="form-control" id="item_number">
                         </div>
+
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="platform" class="form-label">Platform</label>
                             <select class="form-select" id="platform" required>
@@ -79,10 +81,12 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="original_packaging" class="form-label">Original Packaging</label>
                             <input type="checkbox" id="original_packaging">
                         </div>
+
                         <div class="mb-3">
                             <label for="quality" class="form-label">Quality</label>
                             <select class="form-select" id="quality" required>
@@ -91,14 +95,17 @@
                                 <option value="Old">Old</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="stock" class="form-label">Stock</label>
                             <input type="number" class="form-control" id="stock" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="price" class="form-label">Price</label>
                             <input type="number" class="form-control" id="price" required>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Add Item</button>
                     </form>
                 </div>
@@ -107,7 +114,7 @@
     </div>
 
 
-        <!-- Edit Item Modal -->
+    <!-- Edit Item Modal -->
     <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -119,12 +126,19 @@
                     <form id="editItemForm">
                         <div class="mb-3">
                             <label for="edit_sku" class="form-label">SKU</label>
-                            <input type="text" class="form-control" id="edit_sku" readonly>
+                            <input type="text" class="form-control" id="edit_sku">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="edit_item_number" class="form-label">Item Number</label>
+                            <input type="text" class="form-control" id="edit_item_number" readonly>
+                        </div>
+
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="edit_name" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_platform" class="form-label">Platform</label>
                             <select class="form-select" id="edit_platform" required>
@@ -135,10 +149,12 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_original_packaging" class="form-label">Original Packaging</label>
                             <input type="checkbox" id="edit_original_packaging">
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_quality" class="form-label">Quality</label>
                             <select class="form-select" id="edit_quality" required>
@@ -147,20 +163,25 @@
                                 <option value="Old">Old</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_stock" class="form-label">Stock</label>
                             <input type="number" class="form-control" id="edit_stock" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_price" class="form-label">Price</label>
-                            <input type="number" class="form-control" id="edit_price" required step="0.01">
+                            <input type="number" class="form-control" id="edit_price" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update Item</button>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
 
 
     <!-- Sell Item Modal -->
@@ -194,64 +215,16 @@
 
 
     <script>
-        // Add Item functionality
-        $('#addItemForm').on('submit', function(event) {
-            event.preventDefault();
-            let priceString = $('#price').val();
-            let itemData = {
-                sku: $('#sku').val(),
-                name: $('#name').val(),
-                platform: $('#platform').val(),
-                original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,
-                quality: $('#quality').val(),
-                stock: $('#stock').val(),
-                price: parseFloat(priceString)
-            };
 
-            $.ajax({
-                url: '/add_inventory',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(itemData),
-                success: function(response) {
-                    alert(response.message);
-                    $('#addItemModal').modal('hide');
-                    loadInventory();  // Reload inventory
-                },
-                error: function(error) {
-                    alert("Error adding item: " + error.responseText);
-                }
-            });
-        });
+        // Sell Item Modal - On Show
+        $('#sellItemModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var sku = button.data('sku'); // Get the SKU
+            var price = button.data('price'); // Get Price
 
-        // Edit Item functionality
-        $('#editItemForm').on('submit', function(event) {
-            event.preventDefault();
-            let priceString = $('#edit_price').val();
-            let itemData = {
-                sku: $('#edit_sku').val(),
-                name: $('#edit_name').val(),
-                platform: $('#edit_platform').val(),
-                original_packaging: $('#edit_original_packaging').prop('checked') ? 1 : 0,
-                quality: $('#edit_quality').val(),
-                stock: $('#edit_stock').val(),
-                price: parseFloat(priceString)
-            };
-
-            $.ajax({
-                url: '/update_inventory',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(itemData),
-                success: function(response) {
-                    alert(response.message);
-                    $('#editItemModal').modal('hide');
-                    loadInventory();  // Reload inventory
-                },
-                error: function(error) {
-                    alert("Error updating item: " + error.responseText);
-                }
-            });
+            // Populate modal fields with the item data
+            $('#sell_sku').val(sku);  // Set the full SKU in the SKU field
+            $('#sell_price').val(price); // Set the Price input
         });
 
         // Sell Item functionality
@@ -417,68 +390,28 @@
             .catch(error => console.error("Error logging out:", error));
         }
        // Function to generate a new SKU based on user input and selections
-        function generateNewSku() {
-            // Fetch the latest SKU prefix (first 3 digits)
+       function generateNewSku() {
+            // Fetch the latest SKU (whole SKU value)
             $.ajax({
                 url: '/get_latest_sku',
                 method: 'GET',
                 success: function(response) {
-                    let latestSkuPrefix = response.latest_sku_prefix;
+                    let latestSku = response.latest_sku;  // Assuming response contains the full SKU
 
-                    // Get the numeric part and increment it by 1
+                    // Extract the first 3 digits of the latest SKU
+                    let latestSkuPrefix = latestSku.substring(0, 3);  // Get the first 3 characters (digits)
+
+                    // Increment the numeric part by 1
                     let skuNumber = parseInt(latestSkuPrefix) + 1;
 
                     // Ensure the new SKU has 3 digits (e.g., 001, 002, etc.)
                     let newSkuPrefix = skuNumber.toString().padStart(3, '0');
 
-                    // Get the selected platform and map it to the corresponding letter
-                    let platform = $('#platform').val().toUpperCase();
-                    let platformCode = '';
-
-                    switch (platform) {
-                        case 'Playstation':
-                            platformCode = 'P';
-                            break;
-                        case 'Xbox':
-                            platformCode = 'X';
-                            break;
-                        case 'PC':
-                            platformCode = 'C';
-                            break;
-                        case 'Switch':
-                            platformCode = 'S';
-                            break;
-                        default:
-                            platformCode = 'O'; // Default to 'O' for "Other"
-                    }
-
-                    // Check if the checkbox for original packaging is checked ('1' for Yes, '0' for No)
-                    let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';
-
-                    // Get the selected quality (either 'Good', 'Like New', or 'Old')
-                    let quality = $('#quality').val().toUpperCase();
-                    let qualityCode = '';
-
-                    switch (quality) {
-                        case 'Good':
-                            qualityCode = 'G';
-                            break;
-                        case 'Like New':
-                            qualityCode = 'L';
-                            break;
-                        case 'Old':
-                            qualityCode = 'O';
-                            break;
-                    }
-
-                    // Generate the new SKU
-                    let newSku = newSkuPrefix + platformCode + originalPackaging + qualityCode;
+                    // Generate the new SKU using the incremented prefix
+                    let newSku = newSkuPrefix;
 
                     // Set the new SKU in the form (for add-item modal)
                     $('#sku').val(newSku);
-
-                    // If it's the edit-item modal, populate the SKU field too
-                    $('#edit_sku').val(newSku);
                 },
                 error: function(error) {
                     alert('Error fetching latest SKU: ' + error.responseText);
@@ -486,65 +419,113 @@
             });
         }
 
-        // Open modal for add-item and edit-item and generate SKU dynamically
+
+        // Add Item Modal - On Show
         $('#addItemModal').on('show.bs.modal', function () {
-            generateNewSku(); // Generate and display SKU when add-item modal opens
-        });
-
-        $('#editItemModal').on('show.bs.modal', function () {
-            // Retrieve the selected item's details to pre-fill the fields for editing
-            let sku = $('#edit_sku').val(); // If SKU is available in the modal for editing
-            if (sku) {
-                // If the SKU is already set (on edit), we don't generate a new SKU
-                return;
-            } else {
-                generateNewSku(); // Generate a new SKU for new items
-            }
-        });
-
-        // Listen for changes in the form fields to update the SKU in real-time
-        $('#platform, #original_packaging, #quality').on('change', function () {
-            generateNewSku(); // Regenerate the SKU based on the selections
-        });
-
-        // Handle Add Item form submission
-        $('#addItemForm').on('submit', function (event) {
-            event.preventDefault();
-
-            let priceString = $('#price').val();
-            let itemData = {
-                sku: $('#sku').val(),
-                name: $('#name').val(),
-                platform: $('#platform').val(),
-                original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,
-                quality: $('#quality').val(),
-                stock: $('#stock').val(),
-                price: parseFloat(priceString)
-            };
-
+            // Fetch the latest item number (first 3 digits of the SKU)
             $.ajax({
-                url: '/add_inventory',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(itemData),
-                success: function (response) {
-                    alert(response.message);
-                    $('#addItemModal').modal('hide');
-                    loadInventory(); // Reload inventory
+                url: '/get_latest_sku',  // Call to get the latest item number
+                method: 'GET',
+                success: function(response) {
+                    let itemNumber = response.latest_item_number;
+                    
+                    // Populate the "Item Number" field
+                    $('#item_number').val(itemNumber);  // Populate the item number field with the latest number
+                    
+                    // Construct the full SKU (example: 001P1G for platform and quality)
+                    let platform = $('#platform').val().toUpperCase().substring(0, 1);  // First letter of platform
+                    let quality = $('#quality').val().toUpperCase().substring(0, 1);  // First letter of quality
+                    let originalPackaging = $('#original_packaging').prop('checked') ? '1' : '0';  // '1' or '0' based on checkbox
+
+                    // Generate the SKU
+                    let newSku = itemNumber + platform + originalPackaging + quality;
+                    $('#sku').val(newSku);  // Set the SKU field (for editing purposes)
                 },
-                error: function (error) {
-                    alert("Error adding item: " + error.responseText);
+                error: function(error) {
+                    alert('Error fetching latest item number: ' + error.responseText);
                 }
             });
         });
 
+        // Edit Item Modal - On Show
+        $('#editItemModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var sku = button.data('sku'); // Get the SKU
+            var itemNumber = sku.substring(0, 3); // Extract the first 3 digits of the SKU
+            var name = button.data('name'); // Get the Name
+            var platform = button.data('platform'); // Get the Platform
+            var originalPackaging = button.data('original_packaging'); // Get Original Packaging
+            var quality = button.data('quality'); // Get Quality
+            var stock = button.data('stock'); // Get Stock
+            var price = button.data('price'); // Get Price
+
+            // Populate modal fields with the item data
+            $('#edit_sku').val(sku);  // Set the full SKU in the SKU field
+            $('#edit_item_number').val(itemNumber); // Set the first 3 digits of SKU in a separate field (optional, for display)
+            $('#edit_name').val(name); // Set the Name in the input
+            $('#edit_platform').val(platform); // Set the Platform
+            $('#edit_original_packaging').prop('checked', originalPackaging); // Set the Original Packaging checkbox
+            $('#edit_quality').val(quality); // Set the Quality dropdown
+            $('#edit_stock').val(stock); // Set the Stock input
+            $('#edit_price').val(price); // Set the Price input
+
+            // Store the original SKU in a data attribute for later use during form submission
+            $('#edit_sku').data('original-sku', sku); // Save the original SKU (before changes) for later
+        });
+
+
+        // Handle Add Item form submission
+        $('#addItemForm').on('submit', function (event) {
+            event.preventDefault();  // Prevent the default form submission
+
+            // Get the necessary data from the form
+            let platform = $('#platform').val();
+            let quality = $('#quality').val();
+            let originalPackaging = $('#original_packaging').prop('checked') ? 1 : 0;  // 'OP' or 'NO'
+            let priceString = $('#price').val();
+            let itemNumber = $('#item_number').val();  // Get the generated item number
+
+            // Construct the SKU based on the user selections
+            let platformInitial = platform.substr(0, 1).toUpperCase();  // First letter of the platform
+            let qualityInitial = quality.substr(0, 1).toUpperCase();  // First letter of quality
+            let sku = itemNumber + platformInitial + originalPackaging + qualityInitial;
+
+            // Prepare the item data
+            let itemData = {
+                sku: sku,  // Constructed SKU
+                name: $('#name').val(),
+                platform: platform,
+                original_packaging: $('#original_packaging').prop('checked') ? 1 : 0,  // 1 or 0
+                quality: quality,
+                stock: $('#stock').val(),
+                price: parseFloat(priceString)
+            };
+
+            // Send the data to the server
+            $.ajax({
+                url: '/add_inventory',  // Endpoint for adding item
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(itemData),
+                success: function(response) {
+                    alert(response.message);  // Display the success message
+                    $('#addItemModal').modal('hide');  // Close the modal
+                    loadInventory();  // Reload the inventory to display the new item
+                },
+                error: function(error) {
+                    alert('Error adding item: ' + error.responseText);  // Display error message
+                }
+            });
+        });
+
+
         // Handle Edit Item form submission
         $('#editItemForm').on('submit', function (event) {
             event.preventDefault();
-
             let priceString = $('#edit_price').val();
             let itemData = {
-                sku: $('#edit_sku').val(),
+                original_sku: $('#edit_sku').data('original-sku'),  // Get the original SKU
+                sku: $('#edit_sku').val(),  // New SKU to be saved
                 name: $('#edit_name').val(),
                 platform: $('#edit_platform').val(),
                 original_packaging: $('#edit_original_packaging').prop('checked') ? 1 : 0,
@@ -552,6 +533,10 @@
                 stock: $('#edit_stock').val(),
                 price: parseFloat(priceString)
             };
+
+
+            // Adjust the last part of the SKU based on user input (platform, packaging, quality)
+            itemData.sku = generateSkuBasedOnUserInput(itemData.platform, itemData.original_packaging, itemData.quality, itemData.sku);
 
             $.ajax({
                 url: '/update_inventory',
@@ -569,7 +554,57 @@
             });
         });
 
+        // Generate SKU based on platform, packaging, quality, and existing SKU
+        function generateSkuBasedOnUserInput(platform, original_packaging, quality, existingSku = '') {
+            // First 3 digits are constant and represent the 'prefix'
+            const skuPrefix = existingSku ? existingSku.substring(0, 3) : '001'; // Get prefix from existing SKU or default to '001'
 
+            // Platform-specific suffix (we'll add 'P' for platform code)
+            let platformSuffix = '';
+            switch(platform) {
+                case 'Playstation':
+                    platformSuffix = 'P';
+                    break;
+                case 'Xbox':
+                    platformSuffix = 'X';
+                    break;
+                case 'PC':
+                    platformSuffix = 'C';
+                    break;
+                case 'Switch':
+                    platformSuffix = 'S';
+                    break;
+                case 'Other':
+                    platformSuffix = 'O';
+                    break;
+                default:
+                    platformSuffix = 'O';  // Default to 'Other'
+            }
+
+            // Original packaging (1 for original packaging, 0 for no original packaging)
+            let packagingSuffix = original_packaging === 1 ? '1' : '0'; // 1 for Yes, 0 for No
+
+            // Quality code (Good, Like New, Old)
+            let qualityCode = '';
+            switch(quality) {
+                case 'Good':
+                    qualityCode = 'G';
+                    break;
+                case 'Like New':
+                    qualityCode = 'LN';
+                    break;
+                case 'Old':
+                    qualityCode = 'O';
+                    break;
+                default:
+                    qualityCode = 'G'; // Default to 'Good'
+            }
+
+            // Combine the prefix, platform, packaging, and quality
+            const newSku = `${skuPrefix}${platformSuffix}${packagingSuffix}${qualityCode}`;
+
+            return newSku;
+        }
     </script>
 </body>
 </html>
