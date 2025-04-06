@@ -25,6 +25,13 @@ def setup_database():
             password_hash TEXT NOT NULL
         )
     ''')
+    # Migration step: Check if the 'role' column exists; if not, add it.
+    cursor.execute("PRAGMA table_info(users);")
+    columns = cursor.fetchall()
+    column_names = [column[1] for column in columns]
+    if "role" not in column_names:
+        cursor.execute("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'")
+        print("Added missing 'role' column to users table.")
     user_conn.commit()
     user_conn.close()
     print("Database setup complete!")  # ✅ Debugging statement
