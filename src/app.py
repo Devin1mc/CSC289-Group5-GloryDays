@@ -218,27 +218,28 @@ def add_inventory():
     original_packaging = data.get('original_packaging', False)
     quality = data.get('quality')
     stock = int(data.get('stock', 0))
+    price = float(data.get('price', 0))
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Check if the item already exists
+    # Check if the item already exists by SKU
     cursor.execute("SELECT * FROM inventory WHERE sku = ?", (sku,))
     existing_item = cursor.fetchone()
     if existing_item:
         conn.close()
-        return jsonify({"error": "Item already exists"}), 400
+        return jsonify({"error": "Item already exists with the same SKU."}), 400
 
     # Insert the new item into the inventory
     cursor.execute("""
-        INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (sku, name, platform, original_packaging, quality, stock))
+        INSERT INTO inventory (sku, name, platform, original_packaging, quality, stock, price)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (sku, name, platform, original_packaging, quality, stock, price))
 
     conn.commit()
     conn.close()
 
-    return jsonify({"message": "Item added successfully"})
+    return jsonify({"message": "Item added successfully."})
 
 @app.route('/delete_inventory', methods=['POST'])
 def delete_inventory():
@@ -253,31 +254,6 @@ def delete_inventory():
     conn.close()
 
     return jsonify({"message": "Item successfully deleted!"})
-
-@app.route('/update_inventory', methods=['POST'])
-def update_inventory():
-    data = request.get_json()
-    sku = data.get('sku')
-    name = data.get('name')
-    platform = data.get('platform')
-    original_packaging = data.get('original_packaging', False)
-    quality = data.get('quality')
-    stock = int(data.get('stock', 0))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # Update the inventory item
-    cursor.execute("""
-        UPDATE inventory
-        SET name = ?, platform = ?, original_packaging = ?, quality = ?, stock = ?
-        WHERE sku = ?
-    """, (name, platform, original_packaging, quality, stock, sku))
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({"message": "Item updated successfully"})
 
 @app.route('/api/total_revenue')
 def api_total_revenue():
@@ -297,6 +273,89 @@ def api_total_revenue():
     total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
     conn.close()
     return jsonify({"total_revenue": total_revenue})
+
+@app.route('/update_inventory', methods=['POST'])
+def update_inventory():
+    data = request.get_json()
+    original_sku = data.get('original_sku')  # This is the original SKU (before changes)
+    sku = data.get('sku')  # New SKU to be saved
+    name = data.get('name')
+    platform = data.get('platform')
+    original_packaging = data.get('original_packaging', False)
+    quality = data.get('quality')
+    stock = int(data.get('stock', 0))
+    price = float(data.get('price', 0))
+
+    # Database connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Check if the item with the original_sku exists in the database
+    cursor.execute("SELECT * FROM inventory WHERE sku = ?", (original_sku,))
+    existing_item = cursor.fetchone()
+
+    # If the item doesn't exist, return an error
+    if not existing_item:
+        conn.close()
+        return jsonify({"error": "Item not found."}), 404
+
+    # Update the inventory item with the new SKU and other details
+    cursor.execute("""
+        UPDATE inventory
+        SET sku = ?, name = ?, platform = ?, original_packaging = ?, quality = ?, stock = ?, price = ?
+        WHERE sku = ?
+    """, (sku, name, platform, original_packaging, quality, stock, price, original_sku))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item updated successfully."})
+
+
+
+@app.route('/get_latest_sku', methods=['GET'])
+def get_latest_sku():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch the highest existing SKU from the database
+    cursor.execute("SELECT sku FROM inventory ORDER BY sku DESC LIMIT 1")
+    last_item = cursor.fetchone()
+    conn.close()
+
+    # Get the latest SKU (if it exists) and extract the first 3 digits
+    if last_item:
+        latest_sku = last_item['sku']
+        latest_item_number = int(latest_sku[:3]) + 1  # Increment the first 3 digits
+    else:
+        latest_item_number = 1  # Start with 001 if no items exist
+
+    return jsonify({"latest_item_number": str(latest_item_number).zfill(3)})  # Return the next item number as a 3-digit string
+
+@app.route('/get_item_by_id/<item_id>', methods=['GET'])
+def get_item_by_id(item_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch the item by SKU (or use item_id if you want to pass the ID instead of SKU)
+    cursor.execute('SELECT * FROM inventory WHERE sku = ?', (item_id,))
+    item = cursor.fetchone()
+    conn.close()
+
+    if item:
+        # Return the item details in JSON format
+        return jsonify({
+            "sku": item['sku'],
+            "name": item['name'],
+            "platform": item['platform'],
+            "original_packaging": item['original_packaging'],
+            "quality": item['quality'],
+            "stock": item['stock'],
+            "price": item['price']
+        })
+    else:
+        return jsonify({"error": "Item not found"}), 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
