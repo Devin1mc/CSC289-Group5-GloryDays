@@ -25,13 +25,14 @@ def sell_item():
     cursor = conn.cursor()
 
     # Check if the item exists and get its current stock
-    cursor.execute("SELECT stock FROM inventory WHERE sku = ?", (sku,))
+    cursor.execute("SELECT stock, name, quality FROM inventory WHERE sku = ?", (sku,))
     item = cursor.fetchone()
+
     if not item:
         conn.close()
         return jsonify({"error": "Item not found"}), 404
 
-    current_stock = item[0]  # Fetch stock directly as it's returned in tuple
+    current_stock = item["stock"]
     if current_stock < quantity:
         conn.close()
         return jsonify({"error": "Insufficient stock"}), 400
@@ -39,7 +40,11 @@ def sell_item():
     # Deduct the quantity and record the sale
     new_stock = current_stock - quantity
     cursor.execute("UPDATE inventory SET stock = ? WHERE sku = ?", (new_stock, sku))
-    cursor.execute("INSERT INTO sales (sku, quantity, sale_price) VALUES (?, ?, ?)", (sku, quantity, sale_price))
+    cursor.execute(
+    "INSERT INTO sales (sku, name, quality, quantity, sale_price) VALUES (?, ?, ?, ?, ?)",
+    (sku, item["name"], item["quality"], quantity, sale_price)
+)
+
     conn.commit()
     conn.close()
 
@@ -66,21 +71,15 @@ def sales_page():
     cursor.execute("""
         SELECT 
             sales.sku,
-            CASE 
-                WHEN inventory.name IS NULL THEN 'Unlisted Item'
-                ELSE inventory.name 
-            END AS item_name, 
-            sales.sale_date AS sale_date, 
-            CASE 
-                WHEN inventory.quality IS NULL THEN 'Unknown' 
-                ELSE inventory.quality 
-            END AS condition,
+            COALESCE(inventory.name, sales.name, 'Unlisted Item') AS item_name,
+            sales.sale_date AS sale_date,
+            COALESCE(inventory.quality, sales.quality, 'Unknown') AS condition,
             SUM(sales.quantity) AS total_quantity,
             SUM(sales.quantity * sales.sale_price) AS total_sales_value
         FROM sales
         LEFT JOIN inventory ON sales.sku = inventory.sku
         WHERE strftime('%Y-%m', sales.sale_date) = ?
-        GROUP BY sales.sku, sales.sale_date, inventory.quality
+        GROUP BY sales.sku, sales.sale_date, condition
         ORDER BY sale_date DESC
     """, (current_month,))
     sales = cursor.fetchall()
@@ -109,21 +108,22 @@ def api_previous_month_sales():
     result = cursor.fetchone()
     total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
 
-    # Get detailed previous month sales grouped by SKU, date, and quality
+        # Get detailed previous month sales grouped by SKU, date, and quality
     cursor.execute("""
         SELECT 
             sales.sku,
-            inventory.name AS item_name,
+            sales.name AS item_name,
             DATE(sales.sale_date) AS sale_date,
-            inventory.quality AS condition,
+            sales.quality AS condition,
             SUM(sales.quantity) AS total_quantity,
             SUM(sales.quantity * sales.sale_price) AS total_sales_value
         FROM sales
-        JOIN inventory ON sales.sku = inventory.sku
         WHERE strftime('%Y-%m', sales.sale_date) = ?
-        GROUP BY sales.sku, DATE(sales.sale_date), inventory.quality
+        GROUP BY sales.sku, DATE(sales.sale_date), sales.quality
         ORDER BY sale_date DESC
-    """, (prev_month_str,))
+        """, (prev_month_str,))
+
+
     sales_details = [dict(row) for row in cursor.fetchall()]
 
     conn.close()
