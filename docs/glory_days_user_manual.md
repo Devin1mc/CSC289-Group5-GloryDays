@@ -74,6 +74,7 @@ The application includes the following core functionalities:
 1. Enter your Employee ID and Password on the login page.  
 2. Click **Login**.  
 3. If the credentials are valid, you'll be redirected to the main inventory interface.
+
 ![Example of logging in](example_images/login_example.png)
 
 ---
@@ -81,9 +82,11 @@ The application includes the following core functionalities:
 #### Adding Inventory Items
 
 1. After logging in, you will be directed to the inventory page.  
-2. To add a new game, click the **Add Item** button.  
+2. To add a new game, click the **Add Item** button.
+
 ![Example of the add button](example_images/add_button.png)
-3. Fill in the following fields:
+
+4. Fill in the following fields:
    - **Name**: Enter the exact game title as printed.  
    - **Platform**: Choose from PlayStation, Xbox, PC, Switch, or Other.  
    - **Packaging**: Check if the game includes its original case.  
@@ -94,7 +97,8 @@ The application includes the following core functionalities:
      > Do not add broken or non-functioning games.
    - **Stock**: Quantity of this game to add  
    - **Price**: Enter the price per item  
-4. Click **Add** to submit the game into inventory.
+5. Click **Add** to submit the game into inventory.
+
 ![Example of the add window with Red Dead Redemption II as an example](example_images/add_popup.png)
 ---
 
@@ -103,6 +107,7 @@ The application includes the following core functionalities:
 Use the search bar at the top of the inventory page to locate games by name or SKU. This allows for quick access when editing, selling, or verifying inventory.
 
 ![Search bar example](example_images/search_example.png)
+
 ---
 
 #### Removing Inventory Items
@@ -146,6 +151,7 @@ If an item was added in error:
 4. Another manager must confirm your registration with their credentials.
 
 ![Example of an admin registration](example_images/admin_register_example.png)
+
 ---
 
 #### Managing Employees
@@ -165,9 +171,12 @@ If an item was added in error:
 
 1. Access the Admin Panel.  
 2. Click the **View Sales** button.
+
 ![View sales button example](example_images/view_sales_button.png)
-3. Review the sales history, which includes game titles, quantities sold, and prices.  
-4. Use the **Save as PDF** button to export a copy of the report.
+
+4. Review the sales history, which includes game titles, quantities sold, and prices.  
+5. Use the **Save as PDF** button to export a copy of the report.
+
 ![Example of sales page](example_images/sales_page_example.png)
 ---
 
