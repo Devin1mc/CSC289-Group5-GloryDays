@@ -26,7 +26,7 @@ The overall goal of this project is to create a standalone inventory management 
 
 Efficient Inventory Tracking: Develop a real-time inventory tracking feature by Sprint 2, ensuring 100% accurate updates for sales and purchases.
 
-Price Trend Analysis: Implement a web scraping feature by Sprint 3 to retrieve pricing trends for 90% of retro gaming items.
+Sales Analysis: Implement a feature by Sprint 3 to retrieve recent sales and monthly revenue made by Glory Days.
 
 Adding New Inventory Items: Enable tracking all (100%) new inventory items, including prices, by Sprint 3.
 
@@ -38,9 +38,10 @@ Included:
 
 - The software will store inventory data in a database using SQLite for simplicity and reliability.
 - The software will function as a standalone application, requiring no additional external systems.
-- The user interface will be intuitive and developed using a modern framework (e.g., HTML/CSS/JavaScript).
+- The user interface will be intuitive and developed using a modern framework (e.g., HTML/CSS/Python).
 - The application logic will primarily use Python for backend functionality and JavaScript for interactive front-end features.
 - The software will be designed to run on standard retail business computers without requiring specialized hardware.
+- The software will store and load data to and from a local/on site server.
 
 Excluded:
 
@@ -61,7 +62,7 @@ Excluded:
 
 - Budget Constraints: The project must be developed within a limited budget, restricting the use of expensive third-party tools or premium software solutions, and the team must rely on free or open-source resources (e.g., SQLite, Python libraries, and development frameworks).
 - Time Constraints: The project timeline is tied to the semester schedule, requiring strict adherence to deadlines for Sprints 2 and 3, leaving little room for delays in development, testing, and debugging.
-- Technical Constraints: The system must run on standard retail business computers with limited hardware capabilities, and it must use SQLite for data storage while adhering to the team’s current technical expertise in Python, HTML, CSS, or JavaScript.
+- Technical Constraints: The system must run on standard retail business computers with limited hardware capabilities, and it must use SQLite for local data storage while adhering to the team’s current technical expertise in Python, HTML, CSS, or JavaScript.
 - Regulatory and Compliance Constraints: The software must comply with all applicable legal and data privacy regulations, which may impose restrictions on how user and inventory data are stored, processed, and accessed.
 - Testing and Usability Constraints: The GUI must achieve a 90% usability approval rate in simulated retail testing environments, but limited resources may prevent testing all real-world use cases.
 
@@ -77,7 +78,7 @@ GitHub – Will be used to manage changes in programs, revise work, document ver
 
 SQL – Will be used to store business inventory and will be updated daily depending on other business trends/inventory prices. It can be used to calculate our own prices vs other business prices to raise or minimize business profit.
 
-Playwright - Will be used to get other business information on their prices and will highlight important information like stock count, price, and type. Web scraped data will be in Json format and be used on SQL.
+Selenium - Will be used for user end testing my simulating user action such as entering information or submitting forms.
 
 **Team Collaboration and Communication**
 
@@ -110,4 +111,4 @@ Tools & Collaboration:
 Testing & Deployment:
 
 - Unit and integration testing ensure quality.
-- Final sprint focuses on bug fixes, optimizations, and deployment.
+- Final sprint focuses on bug fixes, optimizations, user end testing, and deployment.
