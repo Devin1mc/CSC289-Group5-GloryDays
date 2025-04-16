@@ -54,7 +54,7 @@ The application includes the following core functionalities:
 1. A manager must be present to oversee your registration.  
 2. From the login page, click the **Register** button.
 
-![Registration Page](example_images/registration.png)
+![Registration button](example_images/registration_button.png)
 
 3. On the registration screen, enter your:
    - First Name  
@@ -65,6 +65,8 @@ The application includes the following core functionalities:
 5. The assisting manager must enter their admin ID and password to approve your registration.  
 6. Click **Register** to complete the process. You will be redirected to the login page.
 
+![Filled out registration page](example_images/registration_screen.png)
+
 ---
 
 #### Logging Into Your Account
@@ -72,13 +74,15 @@ The application includes the following core functionalities:
 1. Enter your Employee ID and Password on the login page.  
 2. Click **Login**.  
 3. If the credentials are valid, you'll be redirected to the main inventory interface.
+![Example of logging in](example_images/login_example.png)
 
 ---
 
 #### Adding Inventory Items
 
 1. After logging in, you will be directed to the inventory page.  
-2. To add a new game, click the **Add** button.  
+2. To add a new game, click the **Add Item** button.  
+![Example of the add button](example_images/add_button.png)
 3. Fill in the following fields:
    - **Name**: Enter the exact game title as printed.  
    - **Platform**: Choose from PlayStation, Xbox, PC, Switch, or Other.  
@@ -91,13 +95,14 @@ The application includes the following core functionalities:
    - **Stock**: Quantity of this game to add  
    - **Price**: Enter the price per item  
 4. Click **Add** to submit the game into inventory.
-
+![Example of the add window with Red Dead Redemption II as an example](example_images/add_popup.png)
 ---
 
 #### Searching Inventory
 
 Use the search bar at the top of the inventory page to locate games by name or SKU. This allows for quick access when editing, selling, or verifying inventory.
 
+![Search bar example](example_images/search_example.png)
 ---
 
 #### Removing Inventory Items
@@ -106,7 +111,9 @@ If an item was added in error:
 
 1. Click the **Delete** button next to the item.  
 2. Confirm the deletion by typing **Delete** in the popup box.  
-3. Click **OK** to remove the item from the system.  
+3. Click **OK** to remove the item from the system.
+
+![Delete item example](example_images/delete_item_example.png)
 
 > **Note:** This is not the same as processing a sale. Use the **Sell** function to record sales.
 
@@ -121,7 +128,9 @@ If an item was added in error:
    - **Sale Price**: (Optional) Adjust only if a discount is applied  
 4. Click **Submit** to finalize the transaction.
 
-> The system automatically adjusts stock and logs the sale.
+![Selling an item](example_images/sell_example.png)
+
+> The system automatically adjusts pricing per item in stock and logs the sale.
 
 ---
 
@@ -136,6 +145,7 @@ If an item was added in error:
 3. Select **Admin** from the role dropdown.  
 4. Another manager must confirm your registration with their credentials.
 
+![Example of an admin registration](example_images/admin_register_example.png)
 ---
 
 #### Managing Employees
@@ -145,6 +155,8 @@ If an item was added in error:
 3. To remove an employee, click **Delete** next to their name.  
 4. Confirm the deletion.
 
+![Example of the user list panel](example_images/user_list_example.png)
+
 > **Caution:** Do not delete your own account. You will need a fellow manager to re-register you.
 
 ---
@@ -152,10 +164,11 @@ If an item was added in error:
 #### Viewing Sales
 
 1. Access the Admin Panel.  
-2. Click the **View Sales** button.  
+2. Click the **View Sales** button.
+![View sales button example](example_images/view_sales_button.png)
 3. Review the sales history, which includes game titles, quantities sold, and prices.  
 4. Use the **Save as PDF** button to export a copy of the report.
-
+![Example of sales page](example_images/sales_page_example.png)
 ---
 
 #### Setting Up New Employees
