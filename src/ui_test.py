@@ -11,29 +11,101 @@ from selenium.common.exceptions import (
 )
 import time
 
+def slow_type(element, text, delay=0.1):
+    """Type text slowly into an element to simulate normal typing speed."""
+    for char in text:
+        element.send_keys(char)
+        time.sleep(delay)
+
 # Initialize Chrome WebDriver
 driver = webdriver.Chrome()
 
 try:
     wait = WebDriverWait(driver, 10)
+
+    # === Step 0: Registration ===
+    try:
+        driver.get("http://localhost:5000/register")
+        wait.until(EC.presence_of_element_located((By.NAME, "first_name")))
+        print("Step 0: Registration page loaded successfully.")
+        
+        # Fill out the registration form for the test user using slow typing
+        first_name_field = driver.find_element(By.NAME, "first_name")
+        first_name_field.clear()
+        slow_type(first_name_field, "Test")
+        
+        last_name_field = driver.find_element(By.NAME, "last_name")
+        last_name_field.clear()
+        slow_type(last_name_field, "User")
+        
+        employee_field = driver.find_element(By.NAME, "employee_id")
+        employee_field.clear()
+        slow_type(employee_field, "testuser")
+        
+        password_field = driver.find_element(By.NAME, "password")
+        password_field.clear()
+        slow_type(password_field, "password")
+        
+        # Fill admin credentials to authorize the registration
+        admin_id_field = driver.find_element(By.NAME, "admin_id")
+        admin_id_field.clear()
+        slow_type(admin_id_field, "123")
+        
+        admin_password_field = driver.find_element(By.NAME, "admin_password")
+        admin_password_field.clear()
+        slow_type(admin_password_field, "123")
+        
+        # Submit the registration form by sending ENTER from the last field
+        admin_password_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+        
+        # Check if registration failed due to duplicate employee id or admin error
+        page_source = driver.page_source
+        if "Employee ID already exists" in page_source or "Invalid admin credentials" in page_source:
+            print("Step 0: Registration not successful (user may already be registered or admin credentials invalid). Continuing with test...")
+        else:
+            print("Step 0: Registration successful, redirected to login.")
+    except Exception as e:
+        print("Step 0: Registration step encountered an error:", e)
     
     # === Step 1: Login ===
+    # First, try logging in with test account credentials.
     driver.get("http://localhost:5000/")
     wait.until(EC.presence_of_element_located((By.NAME, "employee_id")))
     print("Step 1: Login page loaded successfully.")
     time.sleep(2)
     
-    driver.find_element(By.NAME, "employee_id").clear()
-    driver.find_element(By.NAME, "employee_id").send_keys("user")
+    login_employee_field = driver.find_element(By.NAME, "employee_id")
+    login_employee_field.clear()
+    login_employee_field.send_keys("testuser")
+    
+    login_password_field = driver.find_element(By.NAME, "password")
+    login_password_field.clear()
+    login_password_field.send_keys("password")
     time.sleep(1)
-    driver.find_element(By.NAME, "password").clear()
-    driver.find_element(By.NAME, "password").send_keys("pass")
-    time.sleep(1)
-    driver.find_element(By.NAME, "password").send_keys(Keys.RETURN)
+    login_password_field.send_keys(Keys.RETURN)
     time.sleep(2)
     
-    wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Employee:')]")))
-    print("Step 1: Valid login succeeded; inventory page loaded.")
+    try:
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Employee:')]")))
+        print("Step 1: Valid login succeeded with test account ('testuser').")
+    except TimeoutException:
+        print("Step 1: Login with test account failed. Trying backup credentials ('user'/'pass').")
+        # Try backup credentials
+        driver.get("http://localhost:5000/")
+        wait.until(EC.presence_of_element_located((By.NAME, "employee_id")))
+        login_employee_field = driver.find_element(By.NAME, "employee_id")
+        login_employee_field.clear()
+        login_employee_field.send_keys("user")
+        
+        login_password_field = driver.find_element(By.NAME, "password")
+        login_password_field.clear()
+        login_password_field.send_keys("pass")
+        time.sleep(1)
+        login_password_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Employee:')]")))
+        print("Step 1: Valid login succeeded with backup credentials ('user'/'pass').")
     time.sleep(2)
     
     # === Step 2: Add a New Inventory Item ===
