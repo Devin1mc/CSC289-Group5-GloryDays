@@ -220,7 +220,7 @@ A: Use the **Other** category.
 
 For technical support or application issues, please contact:
 
-- **Email**: dtmcloughlin@my.waketech.edu  
+- **Email**: [dtmcloughlin@my.waketech.edu](mailto:dtmcloughlin@my.waketech.edu)  
 - **Documentation**: [GitHub Repo or Project Wiki link]  
 
 ---
