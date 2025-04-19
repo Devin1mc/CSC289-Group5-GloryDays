@@ -112,3 +112,21 @@ def inventory_page():
 def logout():
     session.clear()  # Clears the entire session
     return redirect(url_for("auth.login_page"))
+
+@auth_bp.route("/inventory_data")
+def inventory_data():
+    # Check if the 'user' session key exists to ensure the user is logged in
+    # If not, redirect them to the login page
+    if "user" not in session:
+        return redirect(url_for("auth.login_page"))
+
+    # Temporary hardcoded inventory list for testing
+    # This mimics the actual inventory data that would be fetched from a database
+    inventory = [
+        {"sku": "001S0G", "name": "Red Dead Redemption II", "platform": "Switch", "price": 30.0, "stock": 9, "quality": "Good", "original_packaging": 0},
+        {"sku": "002X1L", "name": "Call of Duty Black Ops 3", "platform": "Xbox", "price": 60.0, "stock": 10, "quality": "Like New", "original_packaging": 1},
+        {"sku": "004P0O", "name": "Marvel Rivals", "platform": "PC", "price": 10.0, "stock": 12, "quality": "Old", "original_packaging": 0},
+        {"sku": "005S0G", "name": "Dk Bananza", "platform": "Switch", "price": 80.0, "stock": 0, "quality": "Good", "original_packaging": 0}
+    ]
+
+    return inventory  # Flask will automatically JSONify this list
