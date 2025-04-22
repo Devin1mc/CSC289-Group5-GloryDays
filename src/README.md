@@ -2,7 +2,7 @@
 
 Here is the file stucture and description of the `src` folder
 
-``` bash
+``` text
 CSC289-Group5-GloryDays/
 ├── docs/     # Contents excludes for this diagram
 ├── src/
@@ -25,4 +25,5 @@ CSC289-Group5-GloryDays/
 |       ├── login.html     # Login frontend
 |       ├── register.html     # Frontend for registration page
 |       └── sales.html     # Front end for sales page
+└──
 ```
