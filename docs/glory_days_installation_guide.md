@@ -62,9 +62,11 @@ source venv/bin/activate  # macOS/Linux
 venv\Scripts\activate     # Windows
 ```
 
-4. Install all dependencies:
+4. Install all dependencies in the `src` folder:
 
 ```bash
+cd src
+
 pip install -r requirements.txt
 ```
 
@@ -72,13 +74,13 @@ pip install -r requirements.txt
 
 ## Launching the Software
 
-1. Change into the `src` directory:
+1. Ensure you are in the `src` directory:
 
 ```bash
 cd src
 ```
 
-2. Launch the application:
+2. Launch the application by inputing the command below in the command line:
 
 ```bash
 python app.py
@@ -114,4 +116,7 @@ To uninstall:
 
 - **Email:** [dtmcloughlin@my.waketech.edu](mailto:dtmcloughlin@my.waketech.edu)
 - **GitHub Repository:** [https://github.com/Devin1mc/CSC289-Group5-GloryDays](https://github.com/Devin1mc/CSC289-Group5-GloryDays)  
-- **Documentation:** [Add link if separate PDF or README exists]
+- **Documentation:**
+
+  - User Manual is located in docs/glory_days_user_manual.md
+  - Latest release notes are located in docs/release_notes.md
