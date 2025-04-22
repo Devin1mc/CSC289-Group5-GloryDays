@@ -11,7 +11,7 @@ CSC289-Group5-GloryDays/
 │   ├── inventory.db     # Stores inventory data in tables
 │   ├── login_database.db     # Stores employee info
 │   ├── login.py     # Backend for login and registration
-│   ├── README.md     <--- # You are here
+│   ├── README.md     # You are here <---
 │   ├── static/     # Folder for CSS styles and images
 │   │   ├── images/     # Folder holding images
 │   │   │   └── GloryDaysLogoCircle.JPG     # Glory Days logo
