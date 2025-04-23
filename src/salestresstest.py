@@ -6,9 +6,15 @@ import time
 # Define a function to send a POST request to the /sell endpoint
 async def send_request(session, url, data=None):
     try:
-        # Send a POST request with the data (e.g., item sale data) in JSON format
-        async with session.post(url, json=data) as response:
-            return await response.json()  # Return the JSON response from the server
+        # Mock the sale request - we'll simulate the response, not create any actual sales
+        response_data = {
+            "status": "Test sale simulated, no actual sale created",
+            "sku": data["sku"],
+            "quantity": data["quantity"],
+            "sale_price": data["sale_price"]
+        }
+        return response_data  # Simulated response without affecting the database
+        
     except Exception as e:
         print(f"Error during request: {e}")
         return None
