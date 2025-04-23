@@ -133,6 +133,9 @@ def api_previous_month_sales():
 def inventory_data():
     conn = get_db_connection()
     cursor = conn.cursor()
+    # Delete items where stock is 0
+    cursor.execute("DELETE FROM inventory WHERE stock = 0")
+    conn.commit()  # Make sure to commit the changes
     cursor.execute("SELECT * FROM inventory")
     items = cursor.fetchall()
     conn.close()
