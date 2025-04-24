@@ -38,5 +38,21 @@ def init_db():
         )
     ''')
 
+    # add sale_month column if it's not already there
+    cursor.execute("PRAGMA table_info(sales)")
+    columns = [row["name"] for row in cursor.fetchall()]
+    if "sale_month" not in columns:
+        cursor.execute("ALTER TABLE sales ADD COLUMN sale_month TEXT")
+
+    # fill in sale_month for existing sales
+    cursor.execute("""
+        UPDATE sales
+        SET sale_month = strftime('%Y-%m', sale_date)
+        WHERE sale_month IS NULL
+    """)
+
+    # add index on sale_month to make queries faster
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_sales_sale_month ON sales(sale_month)")
+
     conn.commit()
     conn.close()
