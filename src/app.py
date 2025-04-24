@@ -62,7 +62,7 @@ def sales_page():
     cursor.execute("""
         SELECT SUM(quantity * sale_price) as total_revenue 
         FROM sales 
-        WHERE strftime('%Y-%m', sale_date) = ?
+        WHERE sale_month = ?
     """, (current_month,))
     result = cursor.fetchone()
     total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
@@ -103,7 +103,7 @@ def api_previous_month_sales():
     cursor.execute("""
         SELECT SUM(quantity * sale_price) as total_revenue 
         FROM sales 
-        WHERE strftime('%Y-%m', sale_date) = ?
+        WHERE sale_month = ?
     """, (prev_month_str,))
     result = cursor.fetchone()
     total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
@@ -270,7 +270,7 @@ def api_total_revenue():
     cursor.execute("""
         SELECT SUM(quantity * sale_price) as total_revenue 
         FROM sales 
-        WHERE strftime('%Y-%m', sale_date) = ?
+        WHERE sale_month = ?
     """, (current_month,))
     result = cursor.fetchone()
     total_revenue = result["total_revenue"] if result["total_revenue"] is not None else 0.0
