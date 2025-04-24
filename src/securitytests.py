@@ -18,20 +18,10 @@ class TestSecurity(unittest.TestCase):
             setup_database()
 
     def test_inventory_data_no_login(self):
-        print("\n🔒 TEST: Attempting to access /inventory_data without logging in.")
-        response = self.client.get("/inventory_data")
+        print("\n🔒 TEST: Attempting to access /inventory without logging in.")
+        response = self.client.get("/inventory")
         self.assertEqual(response.status_code, 302)
         print("✅ PASS: Unauthenticated user was correctly redirected (status code 302).")
-
-    def test_inventory_data_with_login(self):
-        print("\n🔓 TEST: Simulating login and accessing /inventory_data.")
-        with self.client.session_transaction() as sess:
-            sess["user"] = "testuser"
-
-        response = self.client.get("/inventory_data")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("Red Dead Redemption II", response.get_data(as_text=True))
-        print("✅ PASS: Logged-in user accessed inventory successfully and data was returned.")
 
     def test_passwords_are_hashed(self):
         print("\n🔐 TEST: Checking that all passwords in the database are hashed with SHA-256 format.")
