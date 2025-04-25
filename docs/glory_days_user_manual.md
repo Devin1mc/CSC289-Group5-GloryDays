@@ -215,7 +215,7 @@ A: Currently, sales are final. Contact a manager for correction procedures.
 **Q: What if a game doesn’t match platform options?**  
 A: Use the **Other** category.
 
-**Q: what if the inventory is not displaying?**  
+**Q: What if the inventory is not displaying?**  
 A: Ensure that files were downloaded correctly, redownload if necessary.
 
 ---
