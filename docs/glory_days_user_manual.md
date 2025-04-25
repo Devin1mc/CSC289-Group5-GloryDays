@@ -60,9 +60,10 @@ The application includes the following core functionalities:
    - First Name  
    - Last Name  
    - Employee ID (format: First initial + Last name, e.g., JDoe)  
-   - Password (provided by the manager)  
+   - Password (provided by the manager but for testing purposes can be made up)  
 4. Select **User** as the role.  
-5. The assisting manager must enter their admin ID and password to approve your registration.  
+5. The assisting manager must enter their admin ID and password to approve your registration.
+   - For the sake of demonstating and testing the application, a root manager account has been created. For the admin ID enter "rootmanager" and for the password enter "rmanager1"
 6. Click **Register** to complete the process. You will be redirected to the login page.
 
 ![Filled out registration page](example_images/registration_screen.png)
@@ -130,12 +131,12 @@ If an item was added in error:
 2. Click the red **Sell** button.  
 3. Enter:
    - **Quantity**: Number of copies being sold  
-   - **Sale Price**: (Optional) Adjust only if a discount is applied  
+   - **Sale Price**: (Optional) Adjust only if a discount is applied
+
+   > Note that the sale price is per game copy. The application will automatically adjust the price with the quantity being sold.
 4. Click **Submit** to finalize the transaction.
 
 ![Selling an item](example_images/sell_example.png)
-
-> The system automatically adjusts pricing per item in stock and logs the sale.
 
 ---
 
@@ -214,6 +215,9 @@ A: Currently, sales are final. Contact a manager for correction procedures.
 **Q: What if a game doesn’t match platform options?**  
 A: Use the **Other** category.
 
+**Q: what if the inventory is not displaying?**  
+A: Ensure that files were downloaded correctly, redownload if necessary.
+
 ---
 
 ### Support and Contact Information
@@ -221,7 +225,7 @@ A: Use the **Other** category.
 For technical support or application issues, please contact:
 
 - **Email**: [dtmcloughlin@my.waketech.edu](mailto:dtmcloughlin@my.waketech.edu)  
-- **Documentation**: [GitHub Repo or Project Wiki link]  
+- **Documentation**: All documentation can be found in the `docs` folder within the repository or, if downloaded, in your ZIP folder 
 
 ---
 
