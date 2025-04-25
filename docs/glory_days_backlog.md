@@ -15,7 +15,7 @@
 |        |2.3    |Enhance UI for better usability                                |Bryan |2/19/2025  |2/26/2025  |Medium  |Yes                |
 |        |2.4    |Create Admin Page            |Thomas |2/22/2025  |3/1/2025   |High    |Yes                |
 |        |2.5    |Test database logic                                            |Ryan |2/25/2025  |3/3/2025   |Medium  |Yes                |
-|Sprint 3|       |Implementing price comparison using previously sold items      |           |3/4/2025   |3/18/2025  |        |                  |
+|Sprint 3|       |Adding features and testing      |           |3/4/2025   |3/18/2025  |        |                  |
 |        |3.1    |Update Login Page UI  |Devin |3/4/2025   |3/8/2025   |High    |Yes                |
 |        |3.2    |Perform load/stress testing|Anthony |3/4/2025   |3/8/2025   |High    |Yes                |
 |        |3.3    |Implement sales page search functionality      |Terry |3/9/2025   |3/18/2025  |Medium  |Yes                |
