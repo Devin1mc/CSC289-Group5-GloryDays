@@ -29,6 +29,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS sales (
             sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
             sku TEXT NOT NULL,
+            name TEXT,
+            quality TEXT,
             quantity INTEGER NOT NULL,
             sale_price REAL NOT NULL,
             sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
