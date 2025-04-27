@@ -12,7 +12,7 @@ The Glory Days Management System is an inventory system made specifically for a 
 
 [Release Notes](https://github.com/Devin1mc/CSC289-Group5-GloryDays/blob/main/docs/release_notes.md)
 
-[Database Schemas](https://github.com/Devin1mc/CSC289-Group5-GloryDays/blob/main/docs/database_schemas)
+[Database Schemas](https://github.com/Devin1mc/CSC289-Group5-GloryDays/blob/main/docs/database_schemas.md)
 
 **All other documentation can be found in the `docs` folder.**
 
