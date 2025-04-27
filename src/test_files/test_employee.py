@@ -2,8 +2,17 @@ import unittest
 import os
 import sqlite3
 import hashlib
+import sys
+
+# Add src/ to the Python path
+current_dir = os.path.dirname(__file__)
+src_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(src_dir)
+
+# These is one folder up from test_files
 from login import setup_database
 from app import app
+
 
 class TestEmployeeDatabase(unittest.TestCase):
     def setUp(self):

@@ -2,7 +2,15 @@ import unittest
 import sqlite3
 import re
 from flask import Flask, session
+import sys
+import os
+
+current_dir = os.path.dirname(__file__)  # test_files/
+src_dir = os.path.abspath(os.path.join(current_dir, '..'))  # Go up to src/
+sys.path.append(src_dir)
+
 from login import auth_bp, setup_database
+
 
 class TestSecurity(unittest.TestCase):
     # This method runs before every test

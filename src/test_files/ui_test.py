@@ -49,11 +49,11 @@ try:
         # Fill admin credentials to authorize the registration
         admin_id_field = driver.find_element(By.NAME, "admin_id")
         admin_id_field.clear()
-        slow_type(admin_id_field, "123")
+        slow_type(admin_id_field, "rootmanager")
         
         admin_password_field = driver.find_element(By.NAME, "admin_password")
         admin_password_field.clear()
-        slow_type(admin_password_field, "123")
+        slow_type(admin_password_field, "rmanager1")
         
         # Submit the registration form by sending ENTER from the last field
         admin_password_field.send_keys(Keys.RETURN)

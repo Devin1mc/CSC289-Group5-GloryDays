@@ -2,6 +2,15 @@ import unittest
 import os
 import sqlite3
 import hashlib
+import sys
+
+# Add src/ to sys.path
+current_dir = os.path.dirname(__file__)
+src_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(src_dir)
+
+# Import necessary modules from the source code
+# These is one folder up from test_files
 from login import setup_database
 from app import app
 import db_setup

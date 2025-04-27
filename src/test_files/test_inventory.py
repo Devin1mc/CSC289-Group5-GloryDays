@@ -1,6 +1,15 @@
 import unittest
 import sqlite3
-import db_setup  # Import your db_setup module
+import sys
+import os
+
+# Add src/ to sys.path
+current_dir = os.path.dirname(__file__)
+src_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(src_dir)
+
+import db_setup # This is one folder up from test_files
+
 
 class TestInventoryDatabase(unittest.TestCase):
     def setUp(self):
