@@ -19,11 +19,12 @@ CSC289-Group5-GloryDays/
 |   |   ├── inventory.css     # Style for inventory page
 |   |   ├── login.css     # Style for both login and registration pages
 |   |   └── sales.css     # Style for sales page
-│   └── templates/     # Folder for frontend HTML files
-│       ├── admin.html     # Admin page frontend
-│       ├── inventory.html     # Inventory frontend
-|       ├── login.html     # Login frontend
-|       ├── register.html     # Frontend for registration page
-|       └── sales.html     # Front end for sales page
+│   ├──templates/     # Folder for frontend HTML files
+│   |    ├── admin.html     # Admin page frontend
+│   |    ├── inventory.html     # Inventory frontend
+|   |    ├── login.html     # Login frontend
+|   |    ├── register.html     # Frontend for registration page
+|   |    └── sales.html     # Front end for sales page
+|   └── test_files/    # Folder for testing files (files are excluded for diagram)
 └──
 ```
