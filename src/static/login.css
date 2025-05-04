@@ -1,0 +1,114 @@
+h2 {
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    position: absolute; /* Absolute position to place it anywhere on the page */
+    top: 1%; /* Moves it above the image */
+    left: 50%;
+    transform: translateX(-50%); /* Centers the text horizontally */
+    z-index: 1; /* Ensures the text is in front of the image */
+    /* Outline effect using text-shadow */
+    text-shadow: 2px 2px 4px #000;
+}
+
+h3{
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 25px;
+    position: absolute; /* Absolute position to place it anywhere on the page */
+    bottom: 25%; /* Moves it above the image */
+    left: 50%;
+    transform: translateX(-50%); /* Centers the text horizontally */
+    z-index: 1; /* Ensures the text is in front of the image */
+    /* Outline effect using text-shadow */
+    text-shadow: 2px 2px 4px #000;
+}
+
+h4{
+    color: #ffffff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to bottom, #a71010, #6e0000); /* Light to dark red gradient */
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+img {
+    position: absolute;
+    top: 25%; /* Moves logo higher */
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2.5); /* Fixing scale syntax */
+    z-index: -1; /* Keeps it behind the login form */
+    background: transparent; /* Removes white background */
+    width: auto;
+    max-width: 120vw; /* makes it larger than before */
+    max-height: 120vh;
+}
+
+form {
+    position: relative;
+    z-index: 1; /* Ensures form stays in front */
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for contrast */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+button {
+    padding: 15px 30px; /* Adds more padding for a larger button */
+    background: #2243ff; /* A bright contrasting color for the button */
+    border: 2px solid #777777; /* Adds a border around the button */
+    border-radius: 5px; /* Rounds the corners */
+    color: #ffffff; /* White text to stand out against the background */
+    font-size: 18px; /* Slightly larger text for better visibility */
+    cursor: pointer; /* Changes the mouse cursor to a pointer */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds shadow for a more 3D look */
+}
+
+button:hover {
+    background: #e2c628; /* Changes the background color on hover */
+    border-color: #ff9d22; /* Changes the border color to the original background color */
+    color: #fff; /* Ensures text remains white */
+    transform: translateY(-3px); /* Slightly lifts the button on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Increases the shadow on hover */
+}
+
+select {
+    padding: 6px 12px; /* Smaller padding for a more compact dropdown */
+    margin: 10px auto; /* Center the dropdown with margin */
+    background-color: #ffffff; /* White background for the dropdown */
+    border: 2px solid #e22f28; /* Adds a border with a contrasting color */
+    border-radius: 5px; /* Rounded corners for the dropdown */
+    color: #333333; /* Dark text color for better readability */
+    font-size: 12px; /* Smaller text for a more compact appearance */
+    appearance: none; /* Removes default dropdown arrow in some browsers */
+    width: 100%; /* Makes the dropdown full width of the container */
+    max-width: 200px; /* Adjusted max width for an even smaller dropdown */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a light shadow for depth */
+    cursor: pointer; /* Changes the cursor to a pointer when hovering */
+    transition: all 0.3s ease; /* Smooth transition for focus/hover states */
+}
+
+select:hover {
+    border-color: #ff9d22; /* Change border color on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow effect */
+}
+
+select:focus {
+    outline: none; /* Removes the default outline when focused */
+    border-color: #ff9d22; /* Border color change when focused */
+    box-shadow: 0 4px 8px rgba(255, 157, 34, 0.5); /* Add glow effect when focused */
+}

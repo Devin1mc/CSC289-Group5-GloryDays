@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recent Sales</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='sales.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 🔒 Everything inside here will be exported to PDF -->
+  <div id="salesContent">
+
+    <div class="container">
+      <header class="sales-header">
+        <div class="logo-title">
+          <img src="/static/images/GloryDaysLogoCircle.JPG" alt="Glory Days Logo" class="sales-logo">
+          <h1 class="sales-title">Recent Sales</h1>
+        </div>
+        <a href="/inventory" class="back-to-inventory">Back to Inventory</a>
+      </header>
+
+      <section class="total-revenue-section">
+        <div class="total-revenue-container">
+          <h2>Total Revenue</h2>
+          <p id="totalRevenue">${{ '%.2f'|format(total_revenue) }}</p>
+        </div>
+      </section>
+
+      <section class="search-section">
+        <input type="text" id="searchBar" placeholder="Search by SKU or Game Title..." class="search-input">
+        <button id="searchButton" class="search-button">
+          <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+          </svg>
+          Search
+        </button>
+      </section>
+
+      <section class="sales-table-section">
+        <table class="sales-table">
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Game Title</th>
+              <th>Condition</th>
+              <th>Quantity</th>
+              <th>Total Sales Value</th>
+              <th>Sale Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sale in sales %}
+            <tr class="sales-row">
+              <td>{{ sale.sku }}</td>
+              <td>{{ sale.item_name }}</td>
+              <td>{{ sale.condition }}</td>
+              <td>{{ sale.total_quantity }}</td>
+              <td>${{ '%.2f'|format(sale.total_sales_value) }}</td>
+              <td>{{ sale.sale_date }}</td>
+            </tr>
+            {% endfor %}
+            {% if sales|length == 0 %}
+            <tr id="noResultRow">
+              <td colspan="6">No sales recorded.</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="prev-month-section">
+      <div id="prevMonthSummary" class="prev-month-summary">
+        <div class="prev-month-info">
+          <h2>Previous Month Sales</h2>
+          <div id="prevMonthTotalRevenue">$0.00</div>
+        </div>
+        <div class="prev-month-toggle">
+          <svg id="toggleArrow" class="toggle-arrow" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.586l3.71-3.354a.75.75 0 111.02 1.1l-4.25 3.848a.75.75 0 01-1.02 0L5.21 8.33a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+      <div id="prevMonthDetails" class="prev-month-details hidden">
+        <table class="prev-month-table">
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Game Title</th>
+              <th>Condition</th>
+              <th>Quantity</th>
+              <th>Total Sales Value</th>
+              <th>Sale Date</th>
+            </tr>
+          </thead>
+          <tbody id="prevMonthTableBody">
+            <!-- Details will be inserted dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div> <!-- end of #salesContent -->
+
+  <!-- Save PDF Button -->
+  <div class="flex justify-end mt-4 px-4">
+    <button id="savePdfButton" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-800 transition duration-300">
+      Save as PDF
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    function updatePrevMonthSales() {
+      fetch('/api/previous_month_sales')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('prevMonthTotalRevenue').textContent = `$${parseFloat(data.total_revenue).toFixed(2)}`;
+          const tbody = document.getElementById('prevMonthTableBody');
+          tbody.innerHTML = '';
+          data.sales_details.forEach(sale => {
+            const row = document.createElement('tr');
+            row.classList.add("sales-row");
+            row.innerHTML = `
+              <td>${sale.sku}</td>
+              <td>${sale.item_name}</td>
+              <td>${sale.condition}</td>
+              <td>${sale.total_quantity}</td>
+              <td>$${parseFloat(sale.total_sales_value).toFixed(2)}</td>
+              <td>${sale.sale_date}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+    }
+
+    document.getElementById('prevMonthSummary').addEventListener('click', () => {
+      const details = document.getElementById('prevMonthDetails');
+      const arrow = document.getElementById('toggleArrow');
+      details.classList.toggle('hidden');
+      arrow.classList.toggle('rotate');
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updatePrevMonthSales();
+      updateTotalRevenue();
+    });
+
+    function updateTotalRevenue() {
+      fetch('/api/total_revenue')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalRevenue').textContent = `$${parseFloat(data.total_revenue).toFixed(2)}`;
+        });
+    }
+
+    function performSearch() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      let visibleCount = 0;
+      rows.forEach(row => {
+        if (row.id === 'noResultRow') return;
+        const sku = row.cells[0].textContent.toLowerCase();
+        const gameName = row.cells[1].textContent.toLowerCase();
+        if (sku.includes(query) || gameName.includes(query)) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      let noResultRow = document.getElementById('noResultRow');
+      if (visibleCount === 0 && !noResultRow) {
+        noResultRow = document.createElement('tr');
+        noResultRow.id = 'noResultRow';
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.textContent = "No results found.";
+        noResultRow.appendChild(td);
+        document.querySelector('table tbody').appendChild(noResultRow);
+      } else if (visibleCount > 0 && noResultRow) {
+        noResultRow.remove();
+      }
+    }
+
+    document.getElementById('searchBar').addEventListener('input', performSearch);
+    document.getElementById('searchButton').addEventListener('click', performSearch);
+
+    // 📄 Save PDF Button logic
+    document.getElementById("savePdfButton").addEventListener("click", function () {
+      const prevMonthDetails = document.getElementById("prevMonthDetails");
+      const toggleArrow = document.getElementById("toggleArrow");
+      if (prevMonthDetails.classList.contains("hidden")) {
+        prevMonthDetails.classList.remove("hidden");
+        toggleArrow.classList.add("rotate-180");
+      }
+
+      const today = new Date();
+      const filename = `GloryDays_Sales_Report_${today.toISOString().slice(0,10)}.pdf`;
+
+      html2pdf().from(document.getElementById("salesContent")).set({
+        margin: 0.5,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      }).save();
+    });
+  </script>
+</body>
+</html>
